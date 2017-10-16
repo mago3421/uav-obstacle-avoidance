@@ -3,7 +3,7 @@
 % Attempt 3 at policy evaluation and iteration
 % Ramya kanlapuli
 
-function [Util_vec,new_action] = PolicyEvalver3(start_auto,stop_auto,start_decep,stop_decep,obst_loc,hor,old_action,decep_loc)
+function [Util_vec,new_action] = PolicyEvalver3(~,stop_auto,start_decep,stop_decp,obst_loc,hor,old_action,decep_loc)
 
 grid_x = 10; %number of horizontal and vertical cells
 grid_y = 10;
