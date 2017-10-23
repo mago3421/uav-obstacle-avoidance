@@ -1,2 +1,5 @@
 .asv
 .swp
+.pyc
+.pyo
+__pycache__/
