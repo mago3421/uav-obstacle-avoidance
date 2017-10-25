@@ -21,7 +21,18 @@ class agent(uav):
 		# Initialize learning model
 		self.model = None
 		
-	# Function which predicts next movement based on learning model
-	def predict(self):
+	# Function which gathers observations based on current position. Should return a matrix with the 
+	def observe(self):
 		pass
+
+	# Function to generate rewards using observations and lookup table (create reward dict inside fxn?)
+	def generateRewards(self):
+		pass
+	
+	# Function which takes in observations, rewards, and former Q-matrix and outputs the action that yields maximum Q using the standard method
+	def predict_standard(self):
+		return action		
 		
+	# Function which predicts next movement based on neural network learning model
+	def predict_NN(self):
+		return action
