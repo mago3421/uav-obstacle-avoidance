@@ -36,3 +36,6 @@ class agent(uav):
 	# Function which predicts next movement based on neural network learning model
 	def predict_NN(self):
 		return action
+		
+	def randomfunction(self):
+	    pass
