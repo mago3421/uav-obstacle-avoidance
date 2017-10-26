@@ -37,5 +37,3 @@ class agent(uav):
 	def predict_NN(self):
 		return action
 		
-	def randomfunction(self):
-	    pass
