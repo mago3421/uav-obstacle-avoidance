@@ -33,6 +33,7 @@ def Generate_Training_Data(Agent=None, Num_Games = 10000, Saved_Games_Percentage
 
         # Initialize game instance
         # TODO start game
+        # This will be done by calling the simulation which creates environments and agents
         position = 0 # TODO
 
         # Play game until you reach a terminal state

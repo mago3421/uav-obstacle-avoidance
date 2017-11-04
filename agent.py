@@ -1,4 +1,4 @@
-"""
+﻿"""
 Name: Agent class
 
 Project: UAV Obstacle Avoidance Using Q-Learning Techniques
@@ -11,6 +11,8 @@ the agent in the simulation including Q-score and learning model.
 """
 
 from uav import *
+from numpy import random
+from neural_network import *
 
 class agent(uav):
 	
@@ -58,4 +60,17 @@ class agent(uav):
 	# Function which predicts next movement based on neural network learning model
 	def predict_NN(self):
 		return command
+
+    # Function which predicts next movement based on Random Movement
+    def predict_Random(self):
+        rd = numpy.random.random()
+        if rd < 0.2:
+            return "up"
+        if rd < 0.4:
+            return "down"
+        if rd < 0.6:
+            return "left"
+        if rd < 0.8:
+            return "right"
+        return "stay"
 		
