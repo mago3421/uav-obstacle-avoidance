@@ -24,21 +24,11 @@ class agent(uav):
 		self.R = None#initialize R matrix
 		# Initialize learning model
 		self.model = None
-		
-	# Function which gathers observations based on current position. Should return a matrix with the 
-	def observe(self):
-	    #Update Q matrix here, appendable dictionary?
-	    
-		pass
 
-	# Function to generate rewards using observations and lookup table (create reward dict inside fxn?)
-	def getRewards(self):
-		pass
-	
 	# Function which takes in observations, rewards, and former Q-matrix and outputs the action that yields maximum Q using the standard method
 	# main loop make location and rewards random and test
 	# Haven't defined proper variable names, in development
-	def predict_standard(self):
+	def predict_Standard(self):
 		pass
 		"""
 	    for i in range(horizon) #horizon is 4
