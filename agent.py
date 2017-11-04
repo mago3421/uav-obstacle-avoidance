@@ -18,8 +18,8 @@ class agent(uav):
 	def __init__(self, location):
 		# Initialize uav super-class
 		super.__init__(location)
-		self.Q = #Q matrix, initialized as 3D matrix
-		self.R = #initialize R matrix
+		self.Q = None#Q matrix, initialized as 3D matrix
+		self.R = None#initialize R matrix
 		# Initialize learning model
 		self.model = None
 		
@@ -37,7 +37,8 @@ class agent(uav):
 	# main loop make location and rewards random and test
 	# Haven't defined proper variable names, in development
 	def predict_standard(self):
-	
+		pass
+		"""
 	    for i in range(horizon) #horizon is 4
 	    
 	    Q[location[0],location[1],action] = (1-alpha)*Q[location[0],location[1],action] + alpha*[Reward[location[0],location[1],action]] + gamma*max(Q[location_new[0],location_new[1],:]) 
@@ -54,8 +55,9 @@ class agent(uav):
 	        command = "right"
 	    
 		return command	
-		
+		"""
 	# Function which predicts next movement based on neural network learning model
 	def predict_NN(self):
-		return command
+		pass
+		#return command
 		
