@@ -12,13 +12,14 @@ a UAV in the simulation including dynamics and path planning.
 
 from entity import *
 from numpy.random import random
+import numpy as np
 
 class uav(entity):
 
 	# Initializer function
 	def __init__(self,location):
 		# Initialize entity super-class
-		super.__init__(location)
+		super(uav,self).__init__(location)
 		# Initialize velocity according components in location
 		self.v = []
 		# Initialize current heading
@@ -44,6 +45,8 @@ class uav(entity):
 							 "down": 0.10,
 							 "left": 0.05,
 							 "right":0.75,}}
+
+		self.rewards = {"!":100, "^":10, "*":-100, "-":-10, "#":-50, "~": 0}
 							
 	# Move function
 	def move(self, command):
@@ -60,3 +63,20 @@ class uav(entity):
 		# UAV changes heading regardless if move was successful
 		self.heading = command
 		
+	# Function which gathers observations based on current position. Should return a matrix with the 
+	def observe(self, obsHorizon):
+		rewards = obsHorizon # initialize so it is the same length
+		for j in range(0,len(obsHorizon)):
+			rewards[j] = self.rewards[obsHorizon[j]] 
+			#print (self.rewards[obsHorizon[j]]) 
+		rewards = np.asarray(rewards)
+		return rewards
+
+
+if __name__ == "__main__":
+	obsHor = ["!","^", "*","-","#","~"]
+	loc = [2,2]
+	UAV=uav(loc)
+
+	rew = UAV.observe(obsHor)
+	print("rew = ", rew)
