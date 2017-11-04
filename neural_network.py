@@ -107,9 +107,10 @@ if __name__ == '__main__':
 
     # Todo sort data from position, reward, action to an input and output data set
 
-    nn = NN(data.train_x[:args.limit], data.train_y[:args.limit], data.test_x, data.test_y)
-    nn.train()
-    acc = nn.evaluate()
-    print(acc)
+    #### Commented out functions for the master branch
+    #nn = NN(data.train_x[:args.limit], data.train_y[:args.limit], data.test_x, data.test_y)
+    #nn.train()
+    #acc = nn.evaluate()
+    #print(acc)
 
     # TOdo use the new agent on a world
