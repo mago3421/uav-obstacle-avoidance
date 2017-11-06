@@ -3,6 +3,6 @@
 .pyc
 .pyo
 .vs
-.pyproj
-.sln
+*.pyproj
+*.sln
 __pycache__/
