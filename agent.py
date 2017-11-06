@@ -12,7 +12,7 @@ the agent in the simulation including Q-score and learning model.
 
 from uav import *
 from numpy import random
-from neural_network import *
+#from neural_network import *
 
 class agent(uav):
 	
@@ -31,37 +31,37 @@ class agent(uav):
 	def predict_Standard(self):
 		pass
 		"""
-	    for i in range(horizon) #horizon is 4
-	    
-	    Q[location[0],location[1],action] = (1-alpha)*Q[location[0],location[1],action] + alpha*[Reward[location[0],location[1],action]] + gamma*max(Q[location_new[0],location_new[1],:]) 
-	    
-	    a = Q.index(max(Q[location[0],location[1],:])) 
-	    
-	    if a ==1 
-	        command = "up"
-	    elif a==2
-	        command = "down"
-	    elif a==3
-	        command = "left"
-	    elif a==4
-	        command = "right"
-	    
+		for i in range(horizon) #horizon is 4
+		
+		Q[location[0],location[1],action] = (1-alpha)*Q[location[0],location[1],action] + alpha*[Reward[location[0],location[1],action]] + gamma*max(Q[location_new[0],location_new[1],:]) 
+		
+		a = Q.index(max(Q[location[0],location[1],:])) 
+		
+		if a ==1 
+			command = "up"
+		elif a==2
+			command = "down"
+		elif a==3
+			command = "left"
+		elif a==4
+			command = "right"
+		
 		return command	
 		"""
 	# Function which predicts next movement based on neural network learning model
 	def predict_NN(self):
 		return command
 
-    # Function which predicts next movement based on Random Movement
-    def predict_Random(self):
-        rd = numpy.random.random()
-        if rd < 0.2:
-            return "up"
-        if rd < 0.4:
-            return "down"
-        if rd < 0.6:
-            return "left"
-        if rd < 0.8:
-            return "right"
-        return "stay"
+	# Function which predicts next movement based on Random Movement
+	def predict_Random(self):
+		rd = numpy.random.random()
+		if rd < 0.2:
+			return "up"
+		if rd < 0.4:
+			return "down"
+		if rd < 0.6:
+			return "left"
+		if rd < 0.8:
+			return "right"
+		return "stay"
 		

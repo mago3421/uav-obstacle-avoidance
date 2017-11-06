@@ -22,12 +22,9 @@ class GridWorld:
             self.static_obstacles.append(self.static_obstacles_row)
             self.static_obstacles.append(self.static_obstacles_col)
 
-
-
-
     def gridDefine(self):
         environment = [['-' for x in range(self.w)] for y in range(self.h)]
-        environment[self.goal_row][self.goal_col]='!'
+        environment[self.goal_row][self.goal_col] = '!'
         environment[self.agent_row][self.agent_col] = 'O'
         length = len(self.static_obstacles)
         for x in range(0,length,2):
