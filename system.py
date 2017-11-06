@@ -29,7 +29,7 @@ class system:
 		# Initialize dictionary of entities
 		#DEBUG: Testing hard-coded values before writing function to load from file
 		self.entities = {"agent": agent([0,0]),
-						 "dynamic": uav([8,8]),
+						 "dynamic": [uav([8,8])],
 						 "goal": entity([9,9]),
 						 "static": [entity([3,3]), entity([5,4,]), entity([8,5]), entity([6,6])]}
 		# Read file and initialize entities

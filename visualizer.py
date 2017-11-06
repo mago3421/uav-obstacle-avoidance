@@ -41,7 +41,8 @@ class visualizer(QGLWidget):
 		for obstacle in self.entities["static"]:
 			self.draw_obstacle(obstacle.get_location())
 		# Draw dynamic obstacles in blue
-		self.draw_uav(self.entities["dynamic"].get_location(), [0, 0, 1])
+		for uav in self.entities["dynamic"]:
+			self.draw_uav(uav.get_location(), [0, 0, 1])
 		# Draw agent in orange
 		self.draw_uav(self.entities["agent"].get_location(), [1, 0.5, 0])
 		# Render the scene
