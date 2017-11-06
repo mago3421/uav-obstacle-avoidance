@@ -17,11 +17,12 @@ import math
 
 class visualizer(QGLWidget):
 	# Function to initialize grid with default 10 x 10 size
-	def __init__(self, parent, grid_width=10, grid_height=10):
+	def __init__(self, parent, entities, grid_width=10, grid_height=10):
 		QGLWidget.__init__(self, parent)
 		self.resize(800, 800)
 		self.grid_width = 10
 		self.grid_height = 10
+		self.entities = entities
 
 	# Function to initialize OpenGL state machine
 	def initializeGL(self):	
@@ -32,16 +33,18 @@ class visualizer(QGLWidget):
 	def paintGL(self):
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 		glLoadIdentity()
-		#DEBUG: Testing grid drawings
+		# Draw grid (NOTE: May include this in entities too or add function to update grid)
 		self.draw_grid()
-		self.draw_text([0, 9], "GOAL", [1, 0, 0])
-		self.draw_uav([0, 0],[0, 0, 1])
-		self.draw_uav([7, 8],[1.0, 0.5, 0])
-		self.draw_obstacle([5, 5])
-		self.draw_obstacle([6, 5])
-		self.draw_obstacle([6, 6])
-		self.draw_obstacle([7, 2])
-		self.draw_obstacle([3, 2])
+		# Draw goal in red
+		self.draw_text(self.entities["goal"].get_location(), "GOAL", [1, 0, 0])
+		# Draw static obstacles
+		for obstacle in self.entities["static"]:
+			self.draw_obstacle(obstacle.get_location())
+		# Draw dynamic obstacles in blue
+		self.draw_uav(self.entities["dynamic"].get_location(), [0, 0, 1])
+		# Draw agent in orange
+		self.draw_uav(self.entities["agent"].get_location(), [1, 0.5, 0])
+		# Render the scene
 		glFlush()
 	
 	# Function called when widget is resized
