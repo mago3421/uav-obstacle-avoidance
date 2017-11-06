@@ -23,7 +23,7 @@ class uav(entity):
 		# Initialize velocity according components in location
 		self.v = []
 		# Initialize current heading
-		self.heading = "none"
+		self.heading = "right"
 		# Vehicle dynamics 2-D dictionary
 		self.dynamics = {"up": 
 							{"up": 0.75,
@@ -49,7 +49,7 @@ class uav(entity):
 		self.rewards = {"!":100, "^":10, "*":-100, "-":-10, "#":-50, "~": 0}
 							
 	# Move function
-	def move(self, command):
+	def move(self, location, command): 
 		# Move if UAV command was successful, else stay put
 		if random() > self.dynamics[command][self.heading]:
 			# Move according to command (up/down -> y+/-1, left/right -> x-/+1)
@@ -62,6 +62,7 @@ class uav(entity):
 			#location[1] = location[1] if 
 		# UAV changes heading regardless if move was successful
 		self.heading = command
+		return location
 		
 	# Function which gathers observations based on current position. Should return a matrix with the 
 	def observe(self, obsHorizon):
