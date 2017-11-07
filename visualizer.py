@@ -38,10 +38,10 @@ class visualizer(QGLWidget):
 		# Draw goal in red
 		self.draw_text(self.entities["goal"].get_location(), "GOAL", [1, 0, 0])
 		# Draw static obstacles
-		for obstacle in self.entities["static"]:
+		for obstacle in self.entities["entity"]:
 			self.draw_obstacle(obstacle.get_location())
 		# Draw dynamic obstacles in blue
-		for uav in self.entities["dynamic"]:
+		for uav in self.entities["uav"]:
 			self.draw_uav(uav.get_location(), [0, 0, 1])
 		# Draw agent in orange
 		self.draw_uav(self.entities["agent"].get_location(), [1, 0.5, 0])
