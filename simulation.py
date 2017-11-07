@@ -21,7 +21,7 @@ from GridWorld import GridWorld
 
 if __name__ == "__main__":
 	#-------for unit tests----------
-	start = np.array([[int(1),int(1)]])
+	start = np.array([int(1),int(1)])
 	goal = np.array([[int(9),int(9)]]) 
 	#-----------------------------------------------------
 	#obstacle = [[1,1] [5,5]]
@@ -49,11 +49,11 @@ if __name__ == "__main__":
 	
 	try:
 		# while the agent is not located at the goal position:
-		while vehState[0,0] != goal[0,0] or vehState[0,1] != goal[0,1]:
+		while vehState[0,0] != goal[0,0] or vehState[0,1] != goal[0,1] or vehState != wall:
 			#------------------------------------------
 			print("sim is running")
 			# make observations
-			rew = UAV.observe([gw[vehState[0,0]-1][vehState[0,1]],gw[vehState[0,0]][vehState[0,1]+1],gw[vehState[0,0]+1][vehState[0,1]],gw[vehState[0,0]][vehState[0,1]-1]])
+			rew = UAV.observe([gw[vehState[0]-1][vehState[1]],gw[vehState[0,0]][vehState[0,1]+1],gw[vehState[0,0]+1][vehState[0,1]],gw[vehState[0,0]][vehState[0,1]-1]])
 			print("rewards =", rew)
 			# decide what action to take
 			action_commanded = modelType[model](vehState,rew)
