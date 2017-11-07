@@ -53,16 +53,16 @@ class agent(uav):
 		return command
 
 	# Function which predicts next movement based on Random Movement
-	def predict_Random(self):
-		rd = numpy.random.random() # Make a random number
+	def predict_Random(self,Current_Location=[0,0],Possible_Rewards=[0,0,0,0]):
+		rd = random.random() # Make a random number
 		possibleActions = [] # An array of possible actions that won't lead to the wall
-		if rewards[0] >-100:
+		if Possible_Rewards[0] >-100:
 			possibleActions.append("up")
-		if rewards[1] >-100:
+		if Possible_Rewards[1] >-100:
 			possibleActions.append("down")
-		if rewards[2] >-100:
+		if Possible_Rewards[2] >-100:
 			possibleActions.append("left")
-		if rewards[3] >-100:
+		if Possible_Rewards[3] >-100:
 			possibleActions.append("right")
 
 		# Select a random action from the list of possible actions
