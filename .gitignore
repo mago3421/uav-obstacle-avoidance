@@ -2,4 +2,7 @@
 .swp
 .pyc
 .pyo
+.vs
+*.pyproj
+*.sln
 __pycache__/
