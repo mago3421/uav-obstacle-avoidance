@@ -22,25 +22,94 @@ class GridWorld:
             self.static_obstacles.append(self.static_obstacles_row)
             self.static_obstacles.append(self.static_obstacles_col)
 
+    def surroundOuterGrid(self, rowEnd, colEnd, environment):
+        rowStart = 1
+        colStart = 1
+        for col in range(colStart-1,colEnd+1):
+            environment[rowStart-1][col] = '#'
+            environment[rowEnd+1][col] = '#'
 
 
+        for row in range(rowStart - 1, rowEnd+2):
+            environment[row][colStart-1] = '#'
+            environment[row][colEnd+1] = '#'
+
+        return environment
+
+    def surroundInnerGrid(self, rowEnd, colEnd, environment):
+        rowStart = 1
+        colStart = 1
+        for col in range(colStart,colEnd):
+            if environment[rowStart][col] == '-':
+                environment[rowStart][col] = 'x'
+            if environment[rowEnd][col] == '-':
+                environment[rowEnd][col] = 'x'
+
+        for row in range(rowStart, rowEnd+1):
+            if environment[row][colStart] == '-':
+                environment[row][colStart] = 'x'
+            if environment[row][colEnd] == '-':
+                environment[row][colEnd] = 'x'
+
+        return environment
+
+    def surroundObstacleGrid(self, rowStart, colStart, environment):
+        rowEnd = rowStart + 1
+        colEnd = colStart + 1
+        rowStart = rowStart - 1
+        colStart = colStart - 1
+        for col in range(colStart, colEnd):
+            if environment[rowStart][col] == '-':
+                environment[rowStart][col] = 'x'
+            if environment[rowEnd][col] == '-':
+                environment[rowEnd][col] = 'x'
+
+        for row in range(rowStart, rowEnd+1):
+            if environment[row][colStart] == '-':
+                environment[row][colStart] = 'x'
+            if environment[row][colEnd] == '-':
+                environment[row][colEnd] = 'x'
+
+        return environment
+
+    def surroundGoalGrid(self, rowStart, colStart, environment):
+        rowEnd = rowStart + 1
+        colEnd = colStart + 1
+        rowStart = rowStart - 1
+        colStart = colStart - 1
+        for col in range(colStart, colEnd):
+            if environment[rowStart][col] == '-':
+                environment[rowStart][col] = '^'
+            if environment[rowEnd][col] == '-':
+                environment[rowEnd][col] = '^'
+
+        for row in range(rowStart, rowEnd+1):
+            if environment[row][colStart] == '-':
+                environment[row][colStart] = '^'
+            if environment[row][colEnd] == '-':
+                environment[row][colEnd] = '^'
+
+        return environment
 
     def gridDefine(self):
-        environment = [['-' for x in range(self.w)] for y in range(self.h)]
+        environment = [['-' for x in range(0,self.w+2)] for y in range(0,self.h+2)]
+        environment = self.surroundOuterGrid( self.h,self.w,environment)
         environment[self.goal_row][self.goal_col]='!'
+        environment = self.surroundGoalGrid(self.goal_row, self.goal_col, environment)
         environment[self.agent_row][self.agent_col] = 'O'
         length = len(self.static_obstacles)
-        for x in range(0,length,2):
-              environment[x][x+1]='*'
+        for x in range(0, length, 2):
+            environment[self.static_obstacles[x]][self.static_obstacles[x+1]] = '*'
+            environment = self.surroundObstacleGrid(self.static_obstacles[x], self.static_obstacles[x+1], environment)
 
+        environment = self.surroundInnerGrid(self.h, self.w, environment)
         # print(self.w, self.h, self.goal_row, self.goal_col,self.agent_row,self.agent_col,self.stat_no,self.static_obstacles_row, self.static_obstacles_col)
         # print(self.static_obstacles)
-        for i in range(0,self.h):
-            for j in range(0,self.w):
+        for i in range(0,self.h+2):
+            for j in range(0,self.w+2):
                 print(environment[i][j],end='')
             print()
         return environment
-    
 
     def find_between(self, s, first, last):
         try:
@@ -53,7 +122,7 @@ class GridWorld:
 if __name__ == "__main__":
     env_file = open("Environment.txt", "r")
     text_in_file = env_file.readline()
-    print (text_in_file)
+    # print (text_in_file)
 
     grid = GridWorld(text_in_file)
     grid.gridDefine()
