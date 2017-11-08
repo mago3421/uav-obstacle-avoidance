@@ -40,6 +40,7 @@ class GridWorld:
                 print(environment[i][j],end='')
             print()
         return environment
+    
 
     def find_between(self, s, first, last):
         try:

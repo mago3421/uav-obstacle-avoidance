@@ -11,6 +11,7 @@ class CreateEnvironment:
             count+=1
             text+='STA'+str(countInc)+str(static_list[count])+'.'
             countInc+=1
+            
         text+='\n'
         print(text)
         file.write(text)
