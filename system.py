@@ -138,6 +138,6 @@ class system:
 	# Function to check status of system. NOTE: Only works when system is finished running.		
 	def get_outcome(self):
 		# Return boolean comparison of agent and goal locations
-		return (self.entities["agent"].get_location() == self.entities["goal"].get_location()) if self.halt else None
+		return (self.entities["agent"].get_location() == self.entities["goal"].get_location()) if not self.running else None
 		
 		
