@@ -11,6 +11,8 @@ in the simulation including basic physical attributes and
 graphical representation.
 """
 
+import math
+
 class entity:
 
 	# Initializer function
@@ -25,3 +27,13 @@ class entity:
 	# Set location
 	def set_location(self, new_location):
 		self.location = new_location if len(self.location) == len(new_location) else self.location
+
+	# Return distance of entity location from target
+	def distance(self, other):
+		magnitude = 0
+		# Assumes distance vectors are the same dimension
+		for i,j in zip(self.location, other):
+			# Get magnitude of difference vector
+			magnitude += pow(abs(i-j),2)
+		return math.sqrt(magnitude)
+		

@@ -24,6 +24,8 @@ class agent(uav):
 		self.R = None#initialize R matrix
 		# Initialize learning model
 		self.model = None
+		# Initialize health
+		self.crashed = False
 
 	# Function which takes in observations, rewards, and former Q-matrix and outputs the action that yields maximum Q using the standard method
 	# main loop make location and rewards random and test
@@ -71,6 +73,13 @@ class agent(uav):
 			if rd < probabilityIncrement*(i+1):
 				return possibleActions[i]
 		return possibleActions[-1] # Last element in the array of possible actions
+		
+	# Collision function
+	def collision(self):
+		self.crashed = True
+		
+	def check_crash(self):
+		return self.crashed
 
 		
 		

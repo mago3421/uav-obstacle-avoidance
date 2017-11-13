@@ -46,23 +46,33 @@ class uav(entity):
 							 "left": 0.05,
 							 "right":0.75,}}
 
-		self.rewards = {"!":100, "^":10, "*":-100, "-":-10, "#":-50, "~": 0}
+		self.rewards = {"goal":100, 
+						"goal_nearby":10, 
+						"entity":-100, 
+						"entity_nearby":-10, 
+						"oob":-50, 
+						"empty": 0}
+						
+		self.los = {"up":0, "down":0, "left":0, "right":0}
 							
 	# Move function
-	def move(self, location, command): 
+	def move(self): 
+		# Insert logic to choose command
+		command = "up"
 		# Move if UAV command was successful, else stay put
 		if random() > self.dynamics[command][self.heading]:
 			# Move according to command (up/down -> y+/-1, left/right -> x-/+1)
-			if command == "up": location[1] += 1
-			if command == "down": location[1] -= 1
-			if command == "left": location[0] -= 1
-			if command == "right": location[0] += 1
+			if command == "up": self.location[1] += 1
+			if command == "down": self.location[1] -= 1
+			if command == "left": self.location[0] -= 1
+			if command == "right": self.location[0] += 1
 			#TODO: Perform bounds check to make sure UAV does not move outside grid
 			#location[0] = location[0] if 
 			#location[1] = location[1] if 
 		# UAV changes heading regardless if move was successful
 		self.heading = command
-		return location
+		# Don't think we need to return location
+		#return self.location
 		
 	# Function which gathers observations based on current position. Should return a matrix with the 
 	def observe(self, obsHorizon):
@@ -72,6 +82,12 @@ class uav(entity):
 			#print (self.rewards[obsHorizon[j]]) 
 		rewards = np.asarray(rewards)
 		return rewards
+		
+	# Function to update rewards dictionary of UAV
+	def update_rewards(self, rewards):
+		# Assume keys are the same
+		for key in rewards.keys():
+			self.los[key] = rewards[key]
 
 
 if __name__ == "__main__":

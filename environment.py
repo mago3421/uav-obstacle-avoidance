@@ -96,9 +96,14 @@ class environment(QtGui.QWidget):
 		
 	# Function to step forward in simulation
 	def step_simulation(self):
-		self.system.step()
+		# Evolve system
+		if self.system.running: self.system.step()
 		# Pass entities to visualizer for drawing
 		self.visualizer.update(self.system.entities)
+		
+	def run_simulation(self):
+		# Run simulation until system reports halt
+		while self.system.running: self.step_simulation()
 		
 	def run(self):
 		self.create_window()
