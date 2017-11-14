@@ -100,6 +100,5 @@ class agent(uav):
 		if command == "down": self.location[1] -= 1
 		if command == "left": self.location[0] -= 1
 		if command == "right": self.location[0] += 1
-		
-		print(command)
+
 		self.Action_Sequence.append(command)

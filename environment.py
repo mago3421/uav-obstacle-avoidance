@@ -64,10 +64,14 @@ class environment(QtGui.QWidget):
 		step_button = QtGui.QPushButton('Step')
 		step_button.clicked.connect(self.step_simulation)
 		vert_layout.addWidget(step_button)
-		# Create reverse button
+		# Create load button
 		reverse_button = QtGui.QPushButton('Load')
 		reverse_button.clicked.connect(self.load_environment)
 		vert_layout.addWidget(reverse_button)
+		# Create run button
+		run_button = QtGui.QPushButton('Run Simulation')
+		run_button.clicked.connect(self.run_simulation)
+		vert_layout.addWidget(run_button)
 		# Add vertical layout to main layout
 		self.layout.addLayout(vert_layout, 0, 1, alignment=QtCore.Qt.AlignTop)
 		
@@ -98,19 +102,21 @@ class environment(QtGui.QWidget):
 	def step_simulation(self):
 		# Evolve system
 		if self.system.running: self.system.step()
+		else: self.system.print_outcome()
 		# Pass entities to visualizer for drawing
 		self.visualizer.update(self.system.entities)
 		
 	def run_simulation(self):
 		# Run simulation until system reports halt
 		while self.system.running: self.step_simulation()
+		self.system.print_outcome()
 		
 	def run(self):
 		self.create_window()
 		
 # Unit Test
 if __name__ == "__main__":
-	env = environment(system("SingleAgent.txt"))
+	env = environment(system("Environment-0.txt"))
 	env.run()
 	
 		

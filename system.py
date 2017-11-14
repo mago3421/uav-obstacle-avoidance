@@ -128,23 +128,38 @@ class system:
 				if uav.get_location() == obstacle.get_location():
 					# Call function to handle collisions in uav
 					uav.collision()
+			# Check if UAV collided with wall
+			x = uav.get_location()[0]
+			y = uav.get_location()[1]
+			if x < 0 or y < 0 or x >= self.dim or y >= self.dim:
+				uav.collision()
 		# Check agent if collided with static or dynamic obstacles
 		for obstacle in self.entities["entity"]+self.entities["uav"]:
 			# Collision occurs if 2-D coordinates are equal		
 			if self.entities["agent"].get_location() == obstacle.get_location():
 				# Call agent collision (and possibly end game?) function if agent collides with obstacle
 				self.entities["agent"].collision()
+		# Check if the agent collided with a wall
+		x = self.entities["agent"].get_location()[0]
+		y = self.entities["agent"].get_location()[1]
+		if x < 0 or y < 0 or x >= self.dim or y >= self.dim:
+			self.entities["agent"].collision()
 		
 	# Function to check status of system. NOTE: Only works when system is finished running.		
 	def get_outcome(self):
 		# Return boolean comparison of agent and goal locations
 		return (self.entities["agent"].get_location() == self.entities["goal"].get_location()) if not self.running else None
 
+	def print_outcome(self):
+		if self.get_outcome(): print("Goal!")
+		else: print("Crashed - Game Over.")
+
 	def test_sim(self, modelType="Random"):
 		self.reset(self.grid_file,modelType) #create grid world and initialize learning model 
 		while self.running == True: # Run learning model until it crashes or reaches goal
 			self.step()
 		print(self.entities["agent"].Action_Sequence) # Print the action sequence if you want
+		self.print_outcome() # Print the outcome of the game
 		 
 	
 if __name__ == "__main__":
@@ -152,6 +167,5 @@ if __name__ == "__main__":
 	# it to a training data creator
 	world_instance = system("SingleAgent.txt")
 	world_instance.test_sim()
-	x=0
 
 
