@@ -26,6 +26,7 @@ class agent(uav):
 		self.model = learning_model
 		# Initialize health
 		self.crashed = False
+		self.Action_Sequence = []
 		
 	# Function which gathers observations based on current position. Should return a matrix with the 
 	def observe(self):
@@ -101,4 +102,4 @@ class agent(uav):
 		if command == "right": self.location[0] += 1
 		
 		print(command)
-		return command
+		self.Action_Sequence.append(command)

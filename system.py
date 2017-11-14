@@ -140,25 +140,18 @@ class system:
 		# Return boolean comparison of agent and goal locations
 		return (self.entities["agent"].get_location() == self.entities["goal"].get_location()) if not self.running else None
 
-
-
-	def test_sim(self, gridFile, modelType)
-		reset(griFile,"Random") #create grid world and initialize learning model 
-		while get_outcome == True:
-			step()
-
-		pass 		
+	def test_sim(self, modelType="Random"):
+		self.reset(self.grid_file,modelType) #create grid world and initialize learning model 
+		while self.running == True: # Run learning model until it crashes or reaches goal
+			self.step()
+		print(self.entities["agent"].Action_Sequence) # Print the action sequence if you want
+		 
+	
 if __name__ == "__main__":
     # Create an instance of the system and run it until it finds the goal, once we get this working we can move 
 	# it to a training data creator
-    world_instance = system("Environment-0.txt")
-
-    while world_instance.running == True:
-        world_instance.step()
-    if world_instance.get_outcome() is not None:
-	# Save the game instance TODO
-        print('Goal Reached!')
-    else:
-        print('Game Over, Goal not reached :(')
+	world_instance = system("SingleAgent.txt")
+	world_instance.test_sim()
+	x=0
 
 
