@@ -89,9 +89,16 @@ class agent(uav):
 
 	def move(self):
 		if self.model == "Random":
-			return self.predict_Random()
-		if self.model == "Standard":
-			return self.predict_Standard(self.location,self.los) # Not sure on rewards...
+			command = self.predict_Random()
+		elif self.model == "Standard":
+			command = self.predict_Standard(self.location,self.los) # Not sure on rewards...
 		else:
-			return self.predict_NN(self.location,self.los) # Not sure on rewards...
+			command = self.predict_NN(self.location,self.los) # Not sure on rewards...
+
+		if command == "up": self.location[1] += 1
+		if command == "down": self.location[1] -= 1
+		if command == "left": self.location[0] -= 1
+		if command == "right": self.location[0] += 1
 		
+		print(command)
+		return command

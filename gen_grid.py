@@ -86,9 +86,9 @@ if __name__ == "__main__":
 		# Initialize parser
 		parser = parser(description='Generate a grid file')
 		parser.add_argument('-d', type=int, default=10, help='Length and width of square-grid')
-		parser.add_argument('-p', type=int, default=0.15, help='Decimal percentage of grid occupied by static obstacles')
-		parser.add_argument('-u', type=int, default=1, help='Number of enemy UAVs in the grid')
-		parser.add_argument('-f', type=str, default="Environment-0.txt", help='Designated filename')
+		parser.add_argument('-p', type=int, default=0.1, help='Decimal percentage of grid occupied by static obstacles')
+		parser.add_argument('-u', type=int, default=0, help='Number of enemy UAVs in the grid')
+		parser.add_argument('-f', type=str, default="SingleAgent.txt", help='Designated filename')
 		# Get arguments
 		args = parser.parse_args()
 		# Generate grid using args: dim, rho, num_adv, filename

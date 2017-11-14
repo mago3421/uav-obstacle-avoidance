@@ -60,7 +60,7 @@ class system:
 		# Move dynamic obstacles
 		for uav in self.entities["uav"]: uav.move()
 		# Move agent
-		self.entities["agent"].move()
+		action_test = self.entities["agent"].move()
 		# Perform collision detection
 		self.detect_collisions()
 		# Check if UAV made it to goal or crashed
