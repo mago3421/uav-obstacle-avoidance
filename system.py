@@ -148,7 +148,7 @@ if __name__ == "__main__":
     while world_instance.running == True:
         world_instance.step()
     if world_instance.get_outcome() is not None:
-		# Save the game instance TODO
+	# Save the game instance TODO
         print('Goal Reached!')
     else:
         print('Game Over, Goal not reached :(')

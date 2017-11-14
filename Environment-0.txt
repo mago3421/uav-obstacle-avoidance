@@ -1,0 +1,19 @@
+10
+entity 0 1
+entity 0 4
+entity 1 0
+entity 1 2
+entity 1 6
+entity 2 8
+agent 2 2
+entity 3 1
+entity 5 3
+entity 5 4
+goal 5 7
+uav 6 2
+entity 7 0
+entity 7 8
+entity 7 5
+entity 7 6
+entity 7 7
+entity 8 5

@@ -13,19 +13,21 @@ and animate all objects in the simulation.
 from pyqtgraph.Qt import QtGui, QtCore
 from copy import *
 from visualizer import *
+from system import *
 from entity import *
 from uav import *
 from agent import *
 
 class environment(QtGui.QWidget):
 	# Function to initialize environment
-	def __init__(self, entities):
+	def __init__(self, system):
 		# Start app and create main window
 		self.app = QtGui.QApplication([])
 		self.main_window = QtGui.QMainWindow()
 		self.main_window.setWindowTitle("UAV Obstacle Avoidance Simulator")
 		QtGui.QWidget.__init__(self)
-		self.entities = entities
+		# Initialize system as part of environment
+		self.system = system
 		
 	# Function to create window
 	def create_window(self):
@@ -63,8 +65,8 @@ class environment(QtGui.QWidget):
 		step_button.clicked.connect(self.step_simulation)
 		vert_layout.addWidget(step_button)
 		# Create reverse button
-		reverse_button = QtGui.QPushButton('Reverse')
-		reverse_button.clicked.connect(self.reverse_simulation)
+		reverse_button = QtGui.QPushButton('Load')
+		reverse_button.clicked.connect(self.load_environment)
 		vert_layout.addWidget(reverse_button)
 		# Add vertical layout to main layout
 		self.layout.addLayout(vert_layout, 0, 1, alignment=QtCore.Qt.AlignTop)
@@ -72,7 +74,7 @@ class environment(QtGui.QWidget):
 	# Function to create visualizer widget and add to layout
 	def create_visualizer(self):
 		# Pass main window so the visualizer can access objects in environment
-		self.visualizer = visualizer(self.main_window)
+		self.visualizer = visualizer(self.main_window, self.system.entities)
 		self.visualizer.setMinimumSize(800, 800)
 		self.visualizer.setMaximumSize(800, 800)
 		# Place visualizer at origin
@@ -81,29 +83,34 @@ class environment(QtGui.QWidget):
 	# Function to update window upon button click or time step
 	def update_window(self):
 		# Send copy so as not to entangle with self.entities (May be bad practice; unsure)
-		self.view(deepcopy(self.entities))
+		self.view(deepcopy(self.system.entities))
 			
 	# Function to reset all objects to their original state (Not sure about the model however)
 	def reset_simulation(self):
-		#TODO: Reset self.entities to original object state from file or saved state
+		self.system.reset()
+		
+	# Function which allows the user to select a new file to use in the simulation
+	def load_environment(self):
+		#TODO: Write function which pops open file browser to select grid file
 		pass
 		
 	# Function to step forward in simulation
 	def step_simulation(self):
-		#TODO: Step objects in self.entities forward in simulation
-		pass
+		# Evolve system
+		if self.system.running: self.system.step()
+		# Pass entities to visualizer for drawing
+		self.visualizer.update(self.system.entities)
 		
-	# Function to go back a step in simulation
-	def reverse_simulation(self):
-		#TODO: Revert self.entities to previous state
-		pass
+	def run_simulation(self):
+		# Run simulation until system reports halt
+		while self.system.running: self.step_simulation()
 		
 	def run(self):
 		self.create_window()
 		
 # Unit Test
 if __name__ == "__main__":
-	env = environment([])
+	env = environment(system("Environment-0.txt"))
 	env.run()
 	
 		
