@@ -73,17 +73,9 @@ class NN:
 
         # TODO: one hot encoding for train_y and test_y
 
-        self.model = Sequential() # model type recommended: https://www.youtube.com/watch?v=G-KvpNGudLw
-        self.model.add(Dense(128, input_shape=(16,), activation = 'relu')) # I think the shape of these may need to be toyed with?
-        self.model.add(Dropout(0.8))
-        self.model.add(Dense(256,activation='relu'))
-        self.model.add(Dropout(0.8))
-        self.model.add(Dense(512,activation='relu'))
-        self.model.add(Dropout(0.8))
-        self.model.add(Dense(256,activation='relu'))
-        self.model.add(Dropout(0.8))
-        self.model.add(Dense(128,activation='relu'))
-        self.model.add(Dropout(0.8))
+        # TODO: build model
+        self.model = Sequential()
+        
         self.model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
 
     def train(self):
