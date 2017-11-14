@@ -14,6 +14,7 @@ from visualizer import *
 from entity import *
 from uav import *
 from agent import *
+from game_data import *
 
 class system:
 
@@ -60,7 +61,7 @@ class system:
 		# Move dynamic obstacles
 		for uav in self.entities["uav"]: uav.move()
 		# Move agent
-		action_test = self.entities["agent"].move()
+		self.entities["agent"].move()
 		# Perform collision detection
 		self.detect_collisions()
 		# Check if UAV made it to goal or crashed
@@ -160,7 +161,19 @@ class system:
 			self.step()
 		print(self.entities["agent"].Action_Sequence) # Print the action sequence if you want
 		self.print_outcome() # Print the outcome of the game
-		 
+
+	def generate_training_data(self,Num_Games,Percentage_Saved_Game=0.5):
+
+		game_data_set = dict() # Want a dictionary with a key of reward sequence length and label of game_data
+		for i in range(Num_Games): # Run the desired number of games
+			self.reset()
+			while self.running == True:
+				self.step()
+			if self.get_outcome() == True: # If we reach the goal then save the data
+				action_len = len(self.entities["agent"].Action_Sequence)
+				game_data = game_data(self.entities["agent"].Action_Sequence,self.entities["agent"].Position_Sequence,self.entities["agent"].Reward_Sequence)
+				game_data_set.update({action_len:game_data})
+		 # TODO sort dictionary by action length and only save the top X% of games
 	
 if __name__ == "__main__":
     # Create an instance of the system and run it until it finds the goal, once we get this working we can move 

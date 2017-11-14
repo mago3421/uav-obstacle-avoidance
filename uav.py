@@ -54,6 +54,10 @@ class uav(entity):
 						"empty": 0}
 						
 		self.los = {"up":0, "down":0, "left":0, "right":0}
+
+		
+		# Initialize health
+		self.crashed = False
 							
 	# Move function
 	def move(self): 
@@ -88,6 +92,10 @@ class uav(entity):
 		# Assume keys are the same
 		for key in rewards.keys():
 			self.los[key] = rewards[key]
+
+		# Collision function
+	def collision(self):
+		self.crashed = True
 
 
 if __name__ == "__main__":

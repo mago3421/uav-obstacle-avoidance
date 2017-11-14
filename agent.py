@@ -26,7 +26,11 @@ class agent(uav):
 		self.model = learning_model
 		# Initialize health
 		self.crashed = False
+
+		# Initialize game data sequences
 		self.Action_Sequence = []
+		self.Position_Sequence = []
+		self.Reward_Sequence = []
 		
 	# Function which gathers observations based on current position. Should return a matrix with the 
 	def observe(self):
@@ -62,16 +66,16 @@ class agent(uav):
 		return command
 
 	# Function which predicts next movement based on Random Movement
-	def predict_Random(self,Current_Location=[0,0],Possible_Rewards=[0,0,0,0]):
+	def predict_Random(self):
 		rd = random.random() # Make a random number
 		possibleActions = [] # An array of possible actions that won't lead to the wall
-		if Possible_Rewards[0] >-100:
-			possibleActions.append("up")
-		if Possible_Rewards[1] >-100:
+		if self.los["up"] >-100:          # Note self.los is the dictionary of rewards! Not sure why it is called that...
+			possibleActions.append("up")  # and it is updated in the system block
+		if self.los["down"] >-100:
 			possibleActions.append("down")
-		if Possible_Rewards[2] >-100:
+		if self.los["left"] >-100:
 			possibleActions.append("left")
-		if Possible_Rewards[3] >-100:
+		if self.los["right"] >-100:
 			possibleActions.append("right")
 
 		# Select a random action from the list of possible actions
@@ -96,9 +100,13 @@ class agent(uav):
 		else:
 			command = self.predict_NN(self.location,self.los) # Not sure on rewards...
 
-		if command == "up": self.location[1] += 1
-		if command == "down": self.location[1] -= 1
-		if command == "left": self.location[0] -= 1
-		if command == "right": self.location[0] += 1
+		# Move if UAV command was successful, else stay put
+		if random.random() > self.dynamics[command][self.heading]:
+			if command == "up": self.location[1] += 1 
+			if command == "down": self.location[1] -= 1
+			if command == "left": self.location[0] -= 1
+			if command == "right": self.location[0] += 1
 
-		self.Action_Sequence.append(command)
+		self.Action_Sequence.append(command) # TODO maybe adding these should be optional?
+		self.Position_Sequence.append(self.location)  
+		self.Reward_Sequence.append(self.los)
