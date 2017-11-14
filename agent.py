@@ -72,7 +72,7 @@ class agent(uav):
 		if self.los["up"] >-100:          # Note self.los is the dictionary of rewards! Not sure why it is called that...
 			possibleActions.append("up")  # and it is updated in the system block
 		if self.los["down"] >-100:
-			possibleActions.append("down")
+			possibleActions.append("down")# TODO Maybe make this a truly random (trade off between more games and better games when training NN)
 		if self.los["left"] >-100:
 			possibleActions.append("left")
 		if self.los["right"] >-100:

@@ -154,6 +154,7 @@ class system:
 	def print_outcome(self):
 		if self.get_outcome(): print("Goal!")
 		else: print("Crashed - Game Over.")
+		print(self.entities["agent"].get_location())
 
 	def test_sim(self, modelType="Random"):
 		self.reset(self.grid_file,modelType) #create grid world and initialize learning model 
