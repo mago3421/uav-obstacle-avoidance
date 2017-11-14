@@ -140,4 +140,14 @@ class system:
 		# Return boolean comparison of agent and goal locations
 		return (self.entities["agent"].get_location() == self.entities["goal"].get_location()) if not self.running else None
 		
-		
+if __name__ == "__main__":
+    # Create an instance of the system and run it until it finds the goal, once we get this working we can move 
+	# it to a training data creator
+    world_instance = system("Environment-0.txt")
+
+    while world_instance.running == True:
+        world_instance.step()
+    if world_instance.get_outcome() is not None:
+		# Save the game instance TODO
+        print('Game Finished!')
+        pass		
