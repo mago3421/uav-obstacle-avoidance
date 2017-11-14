@@ -26,7 +26,7 @@ class system:
 		self.running = True
 		
 	# Function to reset the state of the system from input file
-	def reset(self, grid_file=None):
+	def reset(self, grid_file=None,modeltype="Random"):
 		# Set file the system uses to reset itself
 		self.grid_file = grid_file if grid_file else self.grid_file
 		# Initialize dictionary of entities
@@ -43,7 +43,7 @@ class system:
 				object_type, row, col = (line.strip('\n')).split(' ')
 				row = int(row)
 				col = int(col)
-				if object_type == "agent": self.entities["agent"] = agent([row, col])
+				if object_type == "agent": self.entities["agent"] = agent([row, col], modeltype)
 				elif object_type == "goal": self.entities["goal"] = entity([row, col])
 				elif object_type == "uav": self.entities["uav"].append(uav([row, col]))
 				elif object_type == "entity": self.entities["entity"].append(entity([row, col]))
@@ -139,7 +139,15 @@ class system:
 	def get_outcome(self):
 		# Return boolean comparison of agent and goal locations
 		return (self.entities["agent"].get_location() == self.entities["goal"].get_location()) if not self.running else None
-		
+
+
+
+	def test_sim(self, gridFile, modelType)
+		reset(griFile,"Random") #create grid world and initialize learning model 
+		while get_outcome == True:
+			step()
+
+		pass 		
 if __name__ == "__main__":
     # Create an instance of the system and run it until it finds the goal, once we get this working we can move 
 	# it to a training data creator
@@ -152,3 +160,5 @@ if __name__ == "__main__":
         print('Goal Reached!')
     else:
         print('Game Over, Goal not reached :(')
+
+
