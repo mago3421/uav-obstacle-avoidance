@@ -163,22 +163,32 @@ class system:
 		self.print_outcome() # Print the outcome of the game
 
 	def generate_training_data(self,Num_Games,Percentage_Saved_Game=0.5):
-
-		game_data_set = dict() # Want a dictionary with a key of reward sequence length and label of game_data
+		#initialize list of all tuples 
+		list_game_data = []
 		for i in range(Num_Games): # Run the desired number of games
 			self.reset()
 			while self.running == True:
 				self.step()
-			if self.get_outcome() == True: # If we reach the goal then save the data
+			if selfp.get_outcome() == True: # If we reach the goal then save the data
 				action_len = len(self.entities["agent"].Action_Sequence)
-				game_data = game_data(self.entities["agent"].Action_Sequence,self.entities["agent"].Position_Sequence,self.entities["agent"].Reward_Sequence)
-				game_data_set.update({action_len:game_data})
+				list_game_data.append((action_len,self.entities["agent"].game_data)) #make a tuple....first element = length of action sequence, second is an instance of a class inside a tuple
+				#append the list of all tuples
+		list_game_data.sort(key = lambda x:x[0])
+		#sort list of tuples by the value of the first element in each tuple
+		#do this using a heap!
+		# drop the bottom portion!
 		 # TODO sort dictionary by action length and only save the top X% of games
 	
+
+	def save_training_data()
+		#save all of the training data from all of the games in a json file
+		pass
+
 if __name__ == "__main__":
     # Create an instance of the system and run it until it finds the goal, once we get this working we can move 
 	# it to a training data creator
 	world_instance = system("SingleAgent.txt")
-	world_instance.test_sim()
+	#world_instance.test_sim()
+	world_instance.generate_training_data(2)
 
 
