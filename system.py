@@ -154,34 +154,41 @@ class system:
 	def print_outcome(self):
 		if self.get_outcome(): print("Goal!")
 		else: print("Crashed - Game Over.")
-		print(self.entities["agent"].get_location())
 
 	def test_sim(self, modelType="Random"):
 		self.reset(self.grid_file,modelType) #create grid world and initialize learning model 
 		while self.running == True: # Run learning model until it crashes or reaches goal
 			self.step()
-		print(self.entities["agent"].Action_Sequence) # Print the action sequence if you want
+		print(self.entities["agent"].game_data.Action_Sequence) # Print the action sequence if you want
 		self.print_outcome() # Print the outcome of the game
 
-	def generate_training_data(self,Num_Games,Percentage_Saved_Game=0.5):
+	def generate_training_data(self,Num_Successful_Games,Percentage_Saved_Game=0.5):
 		#initialize list of all tuples 
 		list_game_data = []
-		for i in range(Num_Games): # Run the desired number of games
+		i=0
+		total_num_games = 0
+		while i < Num_Successful_Games: # Run the desired number of games
 			self.reset()
 			while self.running == True:
 				self.step()
-			if selfp.get_outcome() == True: # If we reach the goal then save the data
-				action_len = len(self.entities["agent"].Action_Sequence)
+			if self.get_outcome() == True: # If we reach the goal then save the data
+				action_len = len(self.entities["agent"].game_data.Action_Sequence) # Get the length of the action sequence
 				list_game_data.append((action_len,self.entities["agent"].game_data)) #make a tuple....first element = length of action sequence, second is an instance of a class inside a tuple
-				#append the list of all tuples
-		list_game_data.sort(key = lambda x:x[0])
+				i += 1 # Yay we got a successful game!
+			total_num_games += 1 # Keep track of the total number of run games... just for curiosity
 		#sort list of tuples by the value of the first element in each tuple
-		#do this using a heap!
-		# drop the bottom portion!
-		 # TODO sort dictionary by action length and only save the top X% of games
+		list_game_data.sort() 
+		# make a list of only the top X% of games
+		list_best_data = list_game_data[0:math.ceil(len(list_game_data)*Percentage_Saved_Game)]
+		# remove the first element of the tuple (the action sequence length) because we don't need to save that info
+		best_data = []
+		for i in range(len(list_best_data)):
+			best_data.append(list_best_data[i][1])
+		# Save the data
+		self.save_training_data(best_data)
 	
 
-	def save_training_data()
+	def save_training_data(self,list_game_data): # TODO
 		#save all of the training data from all of the games in a json file
 		pass
 
@@ -191,5 +198,4 @@ if __name__ == "__main__":
 	world_instance = system("SingleAgent.txt")
 	#world_instance.test_sim()
 	world_instance.generate_training_data(2)
-
 

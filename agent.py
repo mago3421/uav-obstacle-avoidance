@@ -13,6 +13,7 @@ the agent in the simulation including Q-score and learning model.
 from uav import *
 from numpy import random
 #from neural_network import *
+from game_data import *
 
 class agent(uav):
 	
@@ -28,9 +29,7 @@ class agent(uav):
 		self.crashed = False
 
 		# Initialize game data sequences
-		self.Action_Sequence = []
-		self.Position_Sequence = []
-		self.Reward_Sequence = []
+		self.game_data = game_data_class()
 		
 	# Function which gathers observations based on current position. Should return a matrix with the 
 	def observe(self):
@@ -69,13 +68,14 @@ class agent(uav):
 	def predict_Random(self):
 		rd = random.random() # Make a random number
 		possibleActions = [] # An array of possible actions that won't lead to the wall
-		if self.los["up"] >-100:          # Note self.los is the dictionary of rewards! Not sure why it is called that...
+		wall_reward = -1000
+		if self.los["up"] > wall_reward:          # Note self.los is the dictionary of rewards! Not sure why it is called that...
 			possibleActions.append("up")  # and it is updated in the system block
-		if self.los["down"] >-100:
+		if self.los["down"] > wall_reward:
 			possibleActions.append("down")# TODO Maybe make this a truly random (trade off between more games and better games when training NN)
-		if self.los["left"] >-100:
+		if self.los["left"] > wall_reward:
 			possibleActions.append("left")
-		if self.los["right"] >-100:
+		if self.los["right"] > wall_reward:
 			possibleActions.append("right")
 
 		# Select a random action from the list of possible actions
@@ -107,6 +107,4 @@ class agent(uav):
 			if command == "left": self.location[0] -= 1
 			if command == "right": self.location[0] += 1
 
-		self.Action_Sequence.append(command) # TODO maybe adding these should be optional?
-		self.Position_Sequence.append(self.location)  
-		self.Reward_Sequence.append(self.los)
+		self.game_data.update(command,self.location,self.los) # TODO maybe adding these should be optional?
