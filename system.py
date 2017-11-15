@@ -15,7 +15,7 @@ from entity import *
 from uav import *
 from agent import *
 from game_data import *
-
+from environment import *
 class system:
 
 	# Function to initialize system
@@ -48,6 +48,8 @@ class system:
 				elif object_type == "goal": self.entities["goal"] = entity([row, col])
 				elif object_type == "uav": self.entities["uav"].append(uav([row, col]))
 				elif object_type == "entity": self.entities["entity"].append(entity([row, col]))
+		# reset the running boolean
+		self.running = True
 	
 	# Function to load new grid file for use in self.reset(f)
 	def load_file(self, grid_file):
@@ -169,6 +171,9 @@ class system:
 		total_num_games = 0
 		while i < Num_Successful_Games: # Run the desired number of games
 			self.reset()
+			visualize_some_games = False
+			if total_num_games%10000 == 0 and visualize_some_games == True: # Display the game every 10,000 games
+				environment(self).run()
 			while self.running == True:
 				self.step()
 			if self.get_outcome() == True: # If we reach the goal then save the data
@@ -197,5 +202,5 @@ if __name__ == "__main__":
 	# it to a training data creator
 	world_instance = system("SingleAgent.txt")
 	#world_instance.test_sim()
-	world_instance.generate_training_data(2)
+	world_instance.generate_training_data(10)
 

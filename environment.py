@@ -28,7 +28,7 @@ class environment(QtGui.QWidget):
 		QtGui.QWidget.__init__(self)
 		# Initialize system as part of environment
 		self.system = system
-		
+
 	# Function to create window
 	def create_window(self):
 		# Create window, set title, and set central widget
