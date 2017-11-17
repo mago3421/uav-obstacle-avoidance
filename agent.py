@@ -14,6 +14,7 @@ from uav import *
 from numpy import random
 #from neural_network import *
 from game_data import *
+from Q_matrix import *
 
 class agent(uav):
 	
@@ -30,6 +31,7 @@ class agent(uav):
 
 		# Initialize game data sequences
 		self.game_data = game_data_class()
+		self.qObj = Q_matrix()
 		
 	# Function which gathers observations based on current position. Should return a matrix with the 
 	def observe(self):
@@ -40,7 +42,9 @@ class agent(uav):
 	# main loop make location and rewards random and test
 	# Haven't defined proper variable names, in development
 	def predict_Standard(self, location, rewards):
-		pass
+		command = self.qObj.update(location,rewards)
+		return command
+		# pass
 		"""
 		for i in range(horizon) #horizon is 4
 		
@@ -59,6 +63,7 @@ class agent(uav):
 		
 		return command	
 		"""
+
 	# Function which predicts next movement based on neural network learning model
 	def predict_NN(self, location, rewards):
 		command = "up" # Filler command for now

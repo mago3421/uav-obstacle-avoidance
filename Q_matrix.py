@@ -49,7 +49,7 @@ class Q_matrix():
         elif a==3:
             command = "right"
 		
-     #return command	
+        return command
     
     def reset_Q(self):
         self.Q = np.zeros(self.cells,self.num_actions)
