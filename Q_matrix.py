@@ -15,14 +15,14 @@ class Q_matrix():
         self.cells = self.grid_sz*self.grid_sz
         self.num_actions = 4
         self.alpha = 0.1
-        self.gamma = 0.1
-        self.Q = np.zeros(self.cells,self.num_actions)
+        self.gamma = 0.75
+        self.Q = np.zeros((self.cells,self.num_actions))
         
         
     #def initialize(self):
         
-    location = self.entities["agent"],
-    rewards = self.rewards or self.los # in uav
+    # location = self.entities["agent"],
+    # rewards = self.rewards or self.los
     
     def update(self,location,los):
         st = location[0]*self.grid_sz + location[1]
