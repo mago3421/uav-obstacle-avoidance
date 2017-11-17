@@ -1,23 +1,21 @@
 ﻿"""
 Name: Agent class
-
 Project: UAV Obstacle Avoidance Using Q-Learning Techniques
-
-Authors: Katherine Glasheen, Marc Gonzalez, Shayon Gupta, 
+Authors: Katherine Glasheen, Marc Gonzalez, Shayon Gupta,
 Travis Hainsworth, Ramya Kanlapuli
-	
+
 Description: This class extends the uav object to create
 the agent in the simulation including Q-score and learning model.
 """
 
 from uav import *
+from Q_matrix import *
 from numpy import random
 #from neural_network import *
 from game_data import *
-from Q_matrix import *
 
 class agent(uav):
-	
+
 	# Intializer function
 	def __init__(self, location, learning_model="Random"):
 		# Initialize uav super-class
@@ -32,8 +30,8 @@ class agent(uav):
 		# Initialize game data sequences
 		self.game_data = game_data_class()
 		self.qObj = Q_matrix()
-		
-	# Function which gathers observations based on current position. Should return a matrix with the 
+
+	# Function which gathers observations based on current position. Should return a matrix with the
 	def observe(self):
 	    #Update Q matrix here, appendable dictionary?
 	    pass
@@ -42,9 +40,9 @@ class agent(uav):
 	# main loop make location and rewards random and test
 	# Haven't defined proper variable names, in development
 	def predict_Standard(self, location, rewards):
-		command = self.qObj.update(location,rewards)
+		command = self.qObj.update(location, rewards)
 		return command
-		# pass
+		pass
 		"""
 		for i in range(horizon) #horizon is 4
 		
@@ -63,7 +61,6 @@ class agent(uav):
 		
 		return command	
 		"""
-
 	# Function which predicts next movement based on neural network learning model
 	def predict_NN(self, location, rewards):
 		command = "up" # Filler command for now
@@ -89,11 +86,11 @@ class agent(uav):
 			if rd < probabilityIncrement*(i+1):
 				return possibleActions[i]
 		return possibleActions[-1] # Last element in the array of possible actions
-		
+
 	# Collision function
 	def collision(self):
 		self.crashed = True
-		
+
 	def check_crash(self):
 		return self.crashed
 
@@ -107,7 +104,7 @@ class agent(uav):
 
 		# Move if UAV command was successful, else stay put
 		if random.random() > self.dynamics[command][self.heading]:
-			if command == "up": self.location[1] += 1 
+			if command == "up": self.location[1] += 1
 			if command == "down": self.location[1] -= 1
 			if command == "left": self.location[0] -= 1
 			if command == "right": self.location[0] += 1

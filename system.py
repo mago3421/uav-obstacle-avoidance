@@ -1,11 +1,9 @@
 """
 Name: System class
-
 Project: UAV Obstacle Avoidance Using Q-Learning Techniques
-
-Authors: Katherine Glasheen, Marc Gonzalez, Shayon Gupta, 
+Authors: Katherine Glasheen, Marc Gonzalez, Shayon Gupta,
 Travis Hainsworth, Ramya Kanlapuli
-	
+
 Description: This class serves as the driver for running the
 system simulation including training and testing the agent's model
 """
@@ -219,7 +217,7 @@ class system:
 
 
 if __name__ == "__main__":
-    # Create an instance of the system and run it until it finds the goal, once we get this working we can move 
+    # Create an instance of the system and run it until it finds the goal, once we get this working we can move
     # it to a training data creator
     world_instance = system("SingleAgent.txt")
     # world_instance.test_sim()
