@@ -15,19 +15,26 @@ from uav import *
 from agent import *
 from game_data import *
 from environment import *
+from Q_matrix import *
 
 
 class system:
     # Function to initialize system
-    def __init__(self, grid_file):
+    def __init__(self, grid_file, modelType = "Random"):
         self.grid_file = grid_file
+        # initialize modelType
+        self.modelType = modelType
+        # initialize Q and R matirces for standard learning
+        self.Q = None
+        self.R = None
         # Set simulation entities to initial conditions from file
         self.reset(self.grid_file)
         # Set simulation state to running
         self.running = True
 
+
     # Function to reset the state of the system from input file
-    def reset(self, grid_file=None, modeltype="Random"):
+    def reset(self, grid_file=None):
         # Set file the system uses to reset itself
         self.grid_file = grid_file if grid_file else self.grid_file
         # Initialize dictionary of entities
@@ -45,7 +52,7 @@ class system:
                 row = int(row)
                 col = int(col)
                 if object_type == "agent":
-                    self.entities["agent"] = agent([row, col], modeltype)
+                    self.entities["agent"] = agent([row, col], self.Q, self.R, self.modelType)
                 elif object_type == "goal":
                     self.entities["goal"] = entity([row, col])
                 elif object_type == "uav":
@@ -54,6 +61,9 @@ class system:
                     self.entities["entity"].append(entity([row, col]))
         # reset the running boolean
         self.running = True
+
+        #initialize all learning model dependencies:
+        self.entities["agent"].init_dependencies(self.dim)
 
     # Function to load new grid file for use in self.reset(f)
     def load_file(self, grid_file):
@@ -215,10 +225,9 @@ class system:
         #
         # print(self.data)
 
-
 if __name__ == "__main__":
     # Create an instance of the system and run it until it finds the goal, once we get this working we can move
     # it to a training data creator
-    world_instance = system("SingleAgent.txt")
+    world_instance = system("SingleAgent.txt","Standard")
     # world_instance.test_sim()
     world_instance.generate_training_data(10)
