@@ -8,10 +8,10 @@ Created on Thu Nov 16 09:20:59 2017
 # Q- matrix
 from uav import *
 
-class Q_matrix():
+class Q_matrix:
     
-    def __init__(self):
-        self.grid_sz = 10 #first line of singleagent.txt
+    def __init__(self, dimensions):
+        self.grid_sz = dimensions #first line of singleagent.txt
         self.cells = self.grid_sz*self.grid_sz
         self.num_actions = 4
         self.alpha = 0.1
