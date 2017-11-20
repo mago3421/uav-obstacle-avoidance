@@ -17,11 +17,11 @@ from game_data import *
 class agent(uav):
 
 	# Intializer function
-	def __init__(self, location, learning_model="Random"):
+	def __init__(self, location, Q=None, R=None, learning_model="Random"):
 		# Initialize uav super-class
 		super(agent,self).__init__(location)
-		self.Q = None#Q matrix, initialized as 3D matrix
-		self.R = None#initialize R matrix
+		self.Q = Q#Q matrix, initialized as 3D matrix
+		self.R = R#initialize R matrix
 		# Initialize learning model
 		self.model = learning_model
 		# Initialize health
@@ -29,12 +29,8 @@ class agent(uav):
 
 		# Initialize game data sequences
 		self.game_data = game_data_class()
-		self.qObj = Q_matrix()
+		self.qObj = []
 
-	# Function which gathers observations based on current position. Should return a matrix with the
-	def observe(self):
-	    #Update Q matrix here, appendable dictionary?
-	    pass
 
 	# Function which takes in observations, rewards, and former Q-matrix and outputs the action that yields maximum Q using the standard method
 	# main loop make location and rewards random and test
@@ -110,3 +106,14 @@ class agent(uav):
 			if command == "right": self.location[0] += 1
 
 		self.game_data.update(command,self.location,self.los) # TODO maybe adding these should be optional?
+
+
+	def init_dependencies(self,dim):
+		# this function will be called each time the system reset function is called.
+		if self.model =="Random":
+			pass
+		if self.model == "Standard":
+			self.qObj = Q_matrix(dim) 
+		else:        
+			pass
+
