@@ -17,11 +17,11 @@ from game_data import *
 class agent(uav):
 
 	# Intializer function
-	def __init__(self, location, Q=None, R=None, learning_model="Random"):
+	def __init__(self, location, learning_model="Random"):
 		# Initialize uav super-class
 		super(agent,self).__init__(location)
-		self.Q = Q#Q matrix, initialized as 3D matrix
-		self.R = R#initialize R matrix
+#		self.Q = Q#Q matrix, initialized as 3D matrix
+#		self.R = R#initialize R matrix
 		# Initialize learning model
 		self.model = learning_model
 		# Initialize health
@@ -29,14 +29,14 @@ class agent(uav):
 
 		# Initialize game data sequences
 		self.game_data = game_data_class()
-		self.qObj = []
+#		self.qObj = []
 
 
 	# Function which takes in observations, rewards, and former Q-matrix and outputs the action that yields maximum Q using the standard method
 	# main loop make location and rewards random and test
 	# Haven't defined proper variable names, in development
-	def predict_Standard(self, location, rewards):
-		command = self.qObj.update(location, rewards)
+	def predict_Standard(self, location, rewards, qObj):
+		command = qObj.update(location, rewards)
 		return command
 		pass
 		"""
@@ -90,11 +90,11 @@ class agent(uav):
 	def check_crash(self):
 		return self.crashed
 
-	def move(self):
+	def move(self, qObj):
 		if self.model == "Random":
 			command = self.predict_Random()
 		elif self.model == "Standard":
-			command = self.predict_Standard(self.location,self.los) # Not sure on rewards...
+			command = self.predict_Standard(self.location,self.los, qObj) # Not sure on rewards...
 		else:
 			command = self.predict_NN(self.location,self.los) # Not sure on rewards...
 
@@ -108,12 +108,5 @@ class agent(uav):
 		self.game_data.update(command,self.location,self.los) # TODO maybe adding these should be optional?
 
 
-	def init_dependencies(self,dim):
-		# this function will be called each time the system reset function is called.
-		if self.model =="Random":
-			pass
-		if self.model == "Standard":
-			self.qObj = Q_matrix(dim) 
-		else:        
-			pass
+	
 
