@@ -58,5 +58,6 @@ class Q_matrix:
     def reset_Q(self):
         self.Q = np.zeros(self.cells,self.num_actions)
 
+
         
         
