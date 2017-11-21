@@ -1,66 +1,77 @@
 ﻿
-import argparse
-import numpy as np
-from collections import Counter, defaultdict
+#import argparse
+#import numpy as np
+#from collections import Counter, defaultdict
 from keras.models import Sequential
-from keras.layers import Conv2D
+#from keras.layers import Conv2D
 from keras.layers import Dense
-from keras.layers import MaxPool2D
+#from keras.layers import MaxPool2D
 from keras.layers import Dropout
-from keras.layers import Flatten
-from keras.layers.core import Reshape
-from keras.utils import np_utils
+#from keras.layers import Flatten
+#from keras.layers.core import Reshape
+#from keras.utils import np_utils
+import pickle
 
 # Saving and loading info: https://keras.io/getting-started/faq/#how-can-i-save-a-keras-model
 
-def Generate_Training_Data(Agent=None, Num_Games = 10000, Saved_Games_Percentage = 0.1):
-    '''
-    Generates data based on a inputted agent, or generates training data based on a random agent
 
-    Agent takes in a position and outputs an action
-    '''
+def data_read(evaluation_percentage=0.3):
+	data_file = 'data.pickle'
+	with open(data_file, 'rb') as x:
+		unprocessed_data = pickle.load(x)
 
-    if Agent == None:
-        # TODO implement random agent
-        pass
+	size_of_data_set = len(unprocessed_data)
+	data = data_type()
 
-    # Make the dictionary of succesfull game states where the key is the length of the policy that was found
-    Game_List = 0 # TODO
+	game_number = 0
+	for game in unprocessed_data: # Create the training data
+		input_game = []
+		output_game = []
 
-    for i in range(Num_Games):
-        # Create empty lists to store game data
-        action_sequence = [] # Each addition should be a single value
-        position_sequence = [] # Each addition shoulb be 2 values (x,y)
-        reward_sequence = []  # Each addition should be 5 values (R_left, R_right, R_up, R_down, R_stay) where R is the reward viewed when anticipating that action
+		game_data_length = len(game.Action_Sequence)
 
-        # Initialize game instance
-        # TODO start game
-        # This will be done by calling the simulation which creates environments and agents
-        position = 0 # TODO
+		# create an input array for a given game example
+		for step in range(game_data_length):
+			input_step = []
+			input_step.extend(game.Position_Sequence[step]) # Extend takes the content of a list and puts it in another
+			input_step.append(game.Reward_Sequence[step]["up"])
+			input_step.append(game.Reward_Sequence[step]["down"])
+			input_step.append(game.Reward_Sequence[step]["left"])
+			input_step.append(game.Reward_Sequence[step]["right"])
+		
+			input_game.append(input_step) # append the list for a single step to the list of inputs for a game 
 
-        # Play game until you reach a terminal state
-        while position is not terminal_state: #TODO implement from game environment
-            action = Agent(position) # TODO
-            position = 0 # TODO
-            rewards = 0 # TODO
+			# one hot encode the output for a given game example
+			action_step = game.Action_Sequence[step]
+			if action_step == "up":
+				one_hot_output = [1, 0, 0, 0]
+			elif action_step == "down":
+				one_hot_output = [0, 1, 0, 0]
+			elif action_step == "left":
+				one_hot_output = [0, 0, 1, 0]
+			else: # action_step == "down"
+				one_hot_output = [0, 0, 0, 1]
+			output_game.append(one_hot_output)
 
-            action_sequence.append(action)
-            position_sequence.append(position)
-            reward_sequence.append(rewards)
+		# Break up the games to test and training data
+		if game_number < size_of_data_set*evaluation_percentage:
+			data.test_x.extend(input_game)
+			data.test_y.extend(output_game)
+		else:
+			data.train_x.extend(input_game)
+			data.train_y.extend(output_game)
 
-        # Only store the game if you made it to the goal and did not crash into an obstacle
-        if position == goal: # TODO - get goal state from game environment
-            game_history = [action_sequence, position_sequence, reward_sequence]
-            Game_List.append(game_history, len(position_sequence)) # TODO - wrong syntax for dictionary
-            
-    # Sort the game list by policy length
-    # Todo
-    # Save only the shortest policy games
-    # Todo
-            
-    pass
+		game_number += 1
+	
+	return data
 
-
+# A class to separate training and test data
+class data_type():
+	def __init__(self):
+		self.train_x = []
+		self.train_y = []
+		self.test_x = []
+		self.test_y = []
 class NN:
     '''
     NN classifier
@@ -108,19 +119,14 @@ class NN:
         return acc
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='CNN classifier options')
-    parser.add_argument('--limit', type=int, default=-1,
-                        help='Restrict training to this many examples')
-    args = parser.parse_args()
+	# Todo read training data
+	data = data_read()
 
-    # Todo make training data
+    # Train the network and evaluate it
+	nn = NN(data.train_x, data.train_y, data.test_x, data.test_y)
+	nn.train()
+	acc = nn.evaluate()
+	print(acc)
 
-    # Todo sort data from position, reward, action to an input and output data set
-
-    #### Commented out functions for the master branch
-    #nn = NN(data.train_x[:args.limit], data.train_y[:args.limit], data.test_x, data.test_y)
-    #nn.train()
-    #acc = nn.evaluate()
-    #print(acc)
-
-    # TOdo use the new agent on a world
+    # save the model
+	nn.save_model('neural_network_model.h5')
