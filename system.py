@@ -16,6 +16,7 @@ from agent import *
 from game_data import *
 from environment import *
 from Q_matrix import *
+from numpy import random
 
 
 class system:
@@ -34,7 +35,7 @@ class system:
 
 
     # Function to reset the state of the system from input file
-    def reset(self, grid_file=None):
+    def reset(self, grid_file=None, random_agent_start = False):
         # Set file the system uses to reset itself
         self.grid_file = grid_file if grid_file else self.grid_file
         # Initialize dictionary of entities
@@ -59,6 +60,12 @@ class system:
                     self.entities["uav"].append(uav([row, col]))
                 elif object_type == "entity":
                     self.entities["entity"].append(entity([row, col]))
+		# If requested randomize the agent's location
+        if random_agent_start == True:
+            x_rand = round(random.random()*self.dim)
+            y_rand = round(random.random()*self.dim)
+            self.entities["agent"].location[0] = x_rand
+            self.entities["agent"].location[0] = y_rand
         # reset the running boolean
         self.running = True
         # initialize the object for the Q-matrix
@@ -187,7 +194,7 @@ class system:
         i = 0
         total_num_games = 0
         while i < Num_Successful_Games:  # Run the desired number of games
-            self.reset()
+            self.reset(random_agent_start=True)
             visualize_some_games = False
             if total_num_games % 10000 == 0 and visualize_some_games == True:  # Display the game every 10,000 games
                 environment(self).run()
@@ -229,4 +236,4 @@ if __name__ == "__main__":
     # it to a training data creator
     world_instance = system("SingleAgent.txt","Random")
     # world_instance.test_sim()
-    world_instance.generate_training_data(10)
+    world_instance.generate_training_data(100)

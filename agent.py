@@ -31,6 +31,9 @@ class agent(uav):
 		self.game_data = game_data_class()
 #		self.qObj = []
 
+		# If the agent is using Neural network then initialize the model
+		if learning_model == "NN":
+			NN_model = load_model('neural_network_model.h5')
 
 	# Function which takes in observations, rewards, and former Q-matrix and outputs the action that yields maximum Q using the standard method
 	# main loop make location and rewards random and test
@@ -59,7 +62,23 @@ class agent(uav):
 		"""
 	# Function which predicts next movement based on neural network learning model
 	def predict_NN(self, location, rewards):
-		command = "up" # Filler command for now
+
+		# one hot encode input:
+		input = []
+		input.append(location)
+		input.append(rewards) # TODO - Not sure if this is correct!!!
+
+		# process output:
+		output = NN_model.predict(input)
+		index = ouput.index(max(output)) # get the index of the most correct action
+		if index == 0:
+			command = "up"
+		elif index == 1:
+			command = "down"
+		elif index == 2:
+			command = "left"
+		else:
+			command = "right"
 		return command
 
 	# Function which predicts next movement based on Random Movement

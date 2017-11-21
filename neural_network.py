@@ -11,6 +11,8 @@ from keras.layers import Flatten
 from keras.layers.core import Reshape
 from keras.utils import np_utils
 
+# Saving and loading info: https://keras.io/getting-started/faq/#how-can-i-save-a-keras-model
+
 def Generate_Training_Data(Agent=None, Num_Games = 10000, Saved_Games_Percentage = 0.1):
     '''
     Generates data based on a inputted agent, or generates training data based on a random agent
