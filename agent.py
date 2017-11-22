@@ -11,7 +11,10 @@ the agent in the simulation including Q-score and learning model.
 from uav import *
 from Q_matrix import *
 from numpy import random
+from numpy import array
+from numpy import argmax
 #from neural_network import *
+from keras.models import load_model
 from game_data import *
 
 class agent(uav):
@@ -33,7 +36,7 @@ class agent(uav):
 
 		# If the agent is using Neural network then initialize the model
 		if learning_model == "NN":
-			NN_model = load_model('neural_network_model.h5')
+			self.NN_model = load_model('neural_network_model.h5')
 
 	# Function which takes in observations, rewards, and former Q-matrix and outputs the action that yields maximum Q using the standard method
 	# main loop make location and rewards random and test
@@ -65,12 +68,15 @@ class agent(uav):
 
 		# one hot encode input:
 		input = []
-		input.append(location)
-		input.append(rewards) # TODO - Not sure if this is correct!!!
+		input.extend(location)
+		input.append(rewards["up"])
+		input.append(rewards["down"])
+		input.append(rewards["left"])
+		input.append(rewards["right"])
 
 		# process output:
-		output = NN_model.predict(input)
-		index = ouput.index(max(output)) # get the index of the most correct action
+		output = self.NN_model.predict(array([input])) # Not sure why the syntax has to be this way to get the correct shape for the initial dense layer.
+		index = argmax(output[0]) # get the index of the most correct action
 		if index == 0:
 			command = "up"
 		elif index == 1:
@@ -115,7 +121,7 @@ class agent(uav):
 		elif self.model == "Standard":
 			command = self.predict_Standard(self.location,self.los, qObj) # Not sure on rewards...
 		else:
-			command = self.predict_NN(self.location,self.los) # Not sure on rewards...
+			command = self.predict_NN(self.location,self.los)
 
 		# Move if UAV command was successful, else stay put
 		if random.random() > self.dynamics[command][self.heading]:

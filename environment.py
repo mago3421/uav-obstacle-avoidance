@@ -116,8 +116,8 @@ class environment(QtGui.QWidget):
 		
 # Unit Test
 if __name__ == "__main__":
-	#env = environment(system("SingleAgent.txt"))	
-	env = environment(system("SingleAgent_With_Walls.txt"))
+	env = environment(system("SingleAgent.txt","NN"))	
+	#env = environment(system("SingleAgent_With_Walls.txt"))
 	#env = environment(system("Environment-0.txt"))
 	env.run()
 	

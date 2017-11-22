@@ -232,8 +232,7 @@ class system:
         # print(self.data
 
 if __name__ == "__main__":
-    # Create an instance of the system and run it until it finds the goal, once we get this working we can move
-    # it to a training data creator
     world_instance = system("SingleAgent.txt","Random")
+
     # world_instance.test_sim()
-    world_instance.generate_training_data(100)
+    world_instance.generate_training_data(60000)

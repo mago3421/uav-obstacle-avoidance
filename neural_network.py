@@ -1,22 +1,27 @@
-﻿
-#import argparse
-#import numpy as np
-#from collections import Counter, defaultdict
+﻿"""
+Name: neural_network
+Project: UAV Obstacle Avoidance Using Q-Learning Techniques
+Authors: Katherine Glasheen, Marc Gonzalez, Shayon Gupta,
+Travis Hainsworth, Ramya Kanlapuli
+
+Description: This class creates, trains, and saves the neural network
+model based on data created from system.py's generate training data 
+function. The model is saved as 'neural_network_model.h5'
+"""
+
 from keras.models import Sequential
-#from keras.layers import Conv2D
 from keras.layers import Dense
-#from keras.layers import MaxPool2D
 from keras.layers import Dropout
-#from keras.layers import Flatten
-#from keras.layers.core import Reshape
-#from keras.utils import np_utils
+from keras.callbacks import EarlyStopping
+import numpy as np
 import pickle
+
 
 # Saving and loading info: https://keras.io/getting-started/faq/#how-can-i-save-a-keras-model
 
 
 def data_read(evaluation_percentage=0.3):
-	data_file = 'data.pickle'
+	data_file = 'NN_Training_Data\Single_Agent_0.pickle'
 	with open(data_file, 'rb') as x:
 		unprocessed_data = pickle.load(x)
 
@@ -72,6 +77,7 @@ class data_type():
 		self.train_y = []
 		self.test_x = []
 		self.test_y = []
+
 class NN:
     '''
     NN classifier
@@ -84,19 +90,25 @@ class NN:
         self.epoches = epoches
 
 
-        # TODO: one hot encoding for train_y and test_y
+        # Data Storage
+        self.train_x = np.array(train_x)
+        self.train_y = np.array(train_y)
+        self.test_x = np.array(test_x)
+        self.test_y = np.array(test_y)
 
+		# Model Creation
         self.model = Sequential() # model type recommended: https://www.youtube.com/watch?v=G-KvpNGudLw
-        self.model.add(Dense(128, input_shape=(16,), activation = 'relu')) # I think the shape of these may need to be toyed with?
-        self.model.add(Dropout(0.8))
+        self.model.add(Dense(128, input_dim=len(self.train_x[0]), activation = 'relu')) # I think the shape of these may need to be toyed with?
+        self.model.add(Dropout(0.2))
         self.model.add(Dense(256,activation='relu'))
-        self.model.add(Dropout(0.8))
+        self.model.add(Dropout(0.2))
         self.model.add(Dense(512,activation='relu'))
-        self.model.add(Dropout(0.8))
+        self.model.add(Dropout(0.2))
         self.model.add(Dense(256,activation='relu'))
-        self.model.add(Dropout(0.8))
+        self.model.add(Dropout(0.2))
         self.model.add(Dense(128,activation='relu'))
-        self.model.add(Dropout(0.8))
+        self.model.add(Dropout(0.2))
+        self.model.add(Dense(len(self.train_y[0]),activation='softmax'))
         self.model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
 
     def train(self):
@@ -107,7 +119,7 @@ class NN:
         :return:
         '''
         # TODO: fit in training data    
-        EarlyStoppingVar = keras.callbacks.EarlyStopping('val_loss')    
+        EarlyStoppingVar = EarlyStopping('val_loss')    
         self.model.fit(self.train_x, self.train_y, self.batch_size, self.epoches, verbose=1, callbacks=[EarlyStoppingVar],validation_split=0.1,shuffle=True)
 
     def evaluate(self):
@@ -129,4 +141,4 @@ if __name__ == '__main__':
 	print(acc)
 
     # save the model
-	nn.save_model('neural_network_model.h5')
+	nn.model.save('neural_network_model.h5')
