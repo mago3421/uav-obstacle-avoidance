@@ -6,6 +6,7 @@ Created on Thu Nov 16 09:20:59 2017
 """
 
 # Q- matrix
+import pickle
 from uav import *
 import numpy as np
 
@@ -17,7 +18,7 @@ class Q_matrix:
         self.num_actions = 4
         self.alpha = 0.1
         self.gamma = 0.75
-        self.Q = np.zeros((self.cells,self.num_actions))
+
         
         
     #def initialize(self):
@@ -57,7 +58,18 @@ class Q_matrix:
         return command
     
     def reset_Q(self):
-        self.Q = np.zeros(self.cells,self.num_actions)
+        self.Q = np.zeros((self.cells, self.num_actions))
+        with open('q_dump.pickle', 'wb') as x:
+            pickle.dump(self.Q, x)
+
+    def dump_Q(self):
+        with open('q_dump.pickle', 'wb') as x:
+            pickle.dump(self.Q, x)
+
+    def load_Q(self):
+        with open('q_dump.pickle', 'rb') as x:
+            self.Q = pickle.load(x)
+
 
 
         

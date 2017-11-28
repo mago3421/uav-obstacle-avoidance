@@ -9,6 +9,7 @@ system simulation including training and testing the agent's model
 """
 
 import pickle
+import os
 from visualizer import *
 from entity import *
 from uav import *
@@ -32,7 +33,10 @@ class system:
         # Set simulation state to running
         self.running = True
         self.qObj = []
-
+        if os.path.isfile('./q_dump.pickle'):
+            self.qObj.load_Q()
+        else:
+            self.qObj.reset_Q()
 
     # Function to reset the state of the system from input file
     def reset(self, grid_file=None, random_agent_start = False):
@@ -229,7 +233,7 @@ class system:
         # with open('data.pickle', 'rb') as x:
         #     self.data = pickle.load(x)
         #
-        # print(self.data
+        # print(self.data)
 
 if __name__ == "__main__":
     world_instance = system("SingleAgent.txt","Random")

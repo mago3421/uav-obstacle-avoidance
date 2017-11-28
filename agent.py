@@ -32,7 +32,6 @@ class agent(uav):
 
 		# Initialize game data sequences
 		self.game_data = game_data_class()
-#		self.qObj = []
 
 		# If the agent is using Neural network then initialize the model
 		if learning_model == "NN":
@@ -43,6 +42,7 @@ class agent(uav):
 	# Haven't defined proper variable names, in development
 	def predict_Standard(self, location, rewards, qObj):
 		command = qObj.update(location, rewards)
+		qObj.dump_Q()
 		return command
 		pass
 		"""
