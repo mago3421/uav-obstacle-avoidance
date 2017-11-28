@@ -22,7 +22,7 @@ from numpy import random
 
 class system:
     # Function to initialize system
-    def __init__(self, grid_file, modelType = "Standard"):
+    def __init__(self, grid_file, modelType = "Random"):
         self.grid_file = grid_file
         # initialize modelType
         self.modelType = modelType
@@ -32,11 +32,7 @@ class system:
         self.reset(self.grid_file)
         # Set simulation state to running
         self.running = True
-        self.qObj = []
-        if os.path.isfile('./q_dump.pickle'):
-            self.qObj.load_Q()
-        else:
-            self.qObj.reset_Q()
+
 
     # Function to reset the state of the system from input file
     def reset(self, grid_file=None, random_agent_start = False):
@@ -73,7 +69,7 @@ class system:
         # reset the running boolean
         self.running = True
         # initialize the object for the Q-matrix
-        self.qObj = Q_matrix(self.dim)
+
 
     # Function to load new grid file for use in self.reset(f)
     def load_file(self, grid_file):
@@ -87,7 +83,7 @@ class system:
         # Move dynamic obstacles
         for uav in self.entities["uav"]: uav.move()
         # Move agent
-        self.entities["agent"].move(self.qObj)
+        self.entities["agent"].move()
         # Perform collision detection
         self.detect_collisions()
         # Check if UAV made it to goal or crashed
