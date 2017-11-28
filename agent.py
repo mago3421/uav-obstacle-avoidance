@@ -20,7 +20,7 @@ from game_data import *
 class agent(uav):
 
 	# Intializer function
-	def __init__(self, location, learning_model="Random"):
+	def __init__(self, location, learning_model="Standard"):
 		# Initialize uav super-class
 		super(agent,self).__init__(location)
 #		self.Q = Q#Q matrix, initialized as 3D matrix

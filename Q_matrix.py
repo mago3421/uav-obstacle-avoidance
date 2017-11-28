@@ -7,6 +7,7 @@ Created on Thu Nov 16 09:20:59 2017
 
 # Q- matrix
 from uav import *
+import numpy as np
 
 class Q_matrix:
     

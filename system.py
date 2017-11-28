@@ -21,7 +21,7 @@ from numpy import random
 
 class system:
     # Function to initialize system
-    def __init__(self, grid_file, modelType = "Random"):
+    def __init__(self, grid_file, modelType = "Standard"):
         self.grid_file = grid_file
         # initialize modelType
         self.modelType = modelType
