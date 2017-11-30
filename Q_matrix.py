@@ -41,21 +41,24 @@ class Q_matrix:
             elif i == 3: #action is right
                 st_new = (location[0]+1)*self.grid_sz + location[1]
                 act = "right"
-                    
-            self.Q[st,i] = (1-self.alpha)*self.Q[st,i] + self.alpha*(los[act] + self.gamma*max(Q[st_new,:]))
+            # DEBUG: Hacked to get running     
+            try:
+                self.Q[st,i] = (1-self.alpha)*self.Q[st,i] + self.alpha*(los[act] + self.gamma*max(self.Q[st_new,:]))
+                #a = self.Q.index(max(self.Q[st,:]))
+                a = np.where(self.Q[st,:] == self.Q[st,:].max())
         
-        a = self.Q.index(max(self.Q[st,:])) 
-		
-        if a ==0: 
-            command = "up"
-        elif a==1:
-            command = "down"
-        elif a==2:
-            command = "left"
-        elif a==3:
-            command = "right"
-		
-        return command
+                if a ==0: 
+                    command = "up"
+                elif a==1:
+                    command = "down"
+                elif a==2:
+                    command = "left"
+                else:
+                    command = "right"
+                return command
+            except IndexError:
+                print("IndexError")
+                return "up" #DEBUG: Fix
     
     def reset_Q(self):
         self.Q = np.zeros((self.cells, self.num_actions))
