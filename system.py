@@ -232,7 +232,7 @@ class system:
         # print(self.data)
 
 if __name__ == "__main__":
-    world_instance = system("SingleAgent.txt","Random")
+    world_instance = system("SingleAgent.txt","Standard")
 
     # world_instance.test_sim()
     world_instance.generate_training_data(60000)
