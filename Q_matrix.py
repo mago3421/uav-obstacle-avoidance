@@ -45,7 +45,8 @@ class Q_matrix:
             try:
                 self.Q[st,i] = (1-self.alpha)*self.Q[st,i] + self.alpha*(los[act] + self.gamma*max(self.Q[st_new,:]))
                 #a = self.Q.index(max(self.Q[st,:]))
-                a = np.where(self.Q[st,:] == self.Q[st,:].max())
+                a = np.where(self.Q[st,:] == max(self.Q[st,:]))
+                a = a[0][0]
         
                 if a ==0: 
                     command = "up"
@@ -53,7 +54,7 @@ class Q_matrix:
                     command = "down"
                 elif a==2:
                     command = "left"
-                else:
+                elif a==3:
                     command = "right"
                 return command
             except IndexError:
