@@ -126,7 +126,7 @@ class agent(uav):
 		if self.model == "Random":
 			command = self.predict_Random()
 		elif self.model == "Standard":
-			command = self.predict_Standard(self.location,self.los, self.qObj) # Not sure on rewards...
+			command = self.predict_Standard(self.location,self.los) # Not sure on rewards...
 		else:
 			command = self.predict_NN(self.location,self.los)
 
