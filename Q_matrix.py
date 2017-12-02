@@ -7,6 +7,7 @@ Created on Thu Nov 16 09:20:59 2017
 
 # Q- matrix
 import pickle
+import os
 from uav import *
 import numpy as np
 
@@ -18,6 +19,11 @@ class Q_matrix:
         self.num_actions = 4
         self.alpha = 0.1
         self.gamma = 0.75
+        if os.path.isfile('q_dump.pickle'):
+            with open('q_dump.pickle', 'rb') as x:
+                self.Q = pickle.load(x)
+        else:
+            self.Q = np.zeros((self.cells, self.num_actions))
 
         
         
@@ -58,8 +64,8 @@ class Q_matrix:
                 command = "right"
             return command
           #  except IndexError:
-           #     print("IndexError")
-                #return "up" #DEBUG: Fix
+          #  print("IndexError")
+          #  return "up" #DEBUG: Fix
     
     def reset_Q(self):
         self.Q = np.zeros((self.cells, self.num_actions))
@@ -67,14 +73,11 @@ class Q_matrix:
             pickle.dump(self.Q, x)
 
     def dump_Q(self):
+        # os.remove('q_dump.pickle')
         with open('q_dump.pickle', 'wb') as x:
             pickle.dump(self.Q, x)
 
     def load_Q(self):
+
         with open('q_dump.pickle', 'rb') as x:
             self.Q = pickle.load(x)
-
-
-
-        
-        
