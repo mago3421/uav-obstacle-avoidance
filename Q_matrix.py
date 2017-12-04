@@ -20,8 +20,12 @@ class Q_matrix:
         self.alpha = 0.1
         self.gamma = 0.75
         if os.path.isfile('q_dump.pickle'):
-            with open('q_dump.pickle', 'rb') as x:
-                self.Q = pickle.load(x)
+            # with open('q_dump.pickle', 'rb') as x:
+            #     self.Q = pickle.load(x)
+            if os.path.getsize('q_dump.pickle') > 0:
+                with open('q_dump.pickle', 'rb') as f:
+                    unpickler = pickle.Unpickler(f)
+                    self.Q = unpickler.load()
         else:
             self.Q = np.zeros((self.cells, self.num_actions))
 
@@ -79,5 +83,12 @@ class Q_matrix:
 
     def load_Q(self):
 
-        with open('q_dump.pickle', 'rb') as x:
-            self.Q = pickle.load(x)
+        # with open('q_dump.pickle', 'rb') as x:
+        #     self.Q = pickle.load(x)
+
+        if os.path.getsize('q_dump.pickle') > 0:
+            with open('q_dump.pickle', 'rb') as f:
+                unpickler = pickle.Unpickler(f)
+                # if file is not empty scores will be equal
+                # to the value unpickled
+                self.Q = unpickler.load()
