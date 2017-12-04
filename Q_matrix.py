@@ -27,7 +27,8 @@ class Q_matrix:
                     unpickler = pickle.Unpickler(f)
                     self.Q = unpickler.load()
         else:
-            self.Q = np.zeros((self.cells, self.num_actions))
+            # self.Q = np.zeros((self.cells, self.num_actions))
+            self.Q = np.random.random((self.cells, self.num_actions))
 
         
         
@@ -72,7 +73,8 @@ class Q_matrix:
           #  return "up" #DEBUG: Fix
     
     def reset_Q(self):
-        self.Q = np.zeros((self.cells, self.num_actions))
+        # self.Q = np.zeros((self.cells, self.num_actions))
+        self.Q = np.random.random((self.cells, self.num_actions))
         with open('q_dump.pickle', 'wb') as x:
             pickle.dump(self.Q, x)
 
