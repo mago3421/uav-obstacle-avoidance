@@ -10,6 +10,7 @@ import pickle
 import os
 from uav import *
 import numpy as np
+import scipy.io as sio
 
 class Q_matrix:
     
@@ -28,7 +29,11 @@ class Q_matrix:
                     self.Q = unpickler.load()
         else:
             # self.Q = np.zeros((self.cells, self.num_actions))
-            self.Q = np.random.random((self.cells, self.num_actions))
+            # self.Q = np.random.random((self.cells, self.num_actions))
+            self.Q = sio.loadmat('QContents.mat')['Q_matrix']
+
+
+
 
         
         
@@ -74,7 +79,9 @@ class Q_matrix:
     
     def reset_Q(self):
         # self.Q = np.zeros((self.cells, self.num_actions))
-        self.Q = np.random.random((self.cells, self.num_actions))
+        # self.Q = np.random.random((self.cells, self.num_actions))
+        self.Q = sio.loadmat('QContents.mat')['Q_matrix']
+
         with open('q_dump.pickle', 'wb') as x:
             pickle.dump(self.Q, x)
 
