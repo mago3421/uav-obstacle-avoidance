@@ -7,7 +7,7 @@ Travis Hainsworth, Ramya Kanlapuli
 Description: This class extends the uav object to create
 the agent in the simulation including Q-score and learning model.
 """
-
+import os
 from uav import *
 from Q_matrix import *
 from numpy import random
@@ -32,17 +32,24 @@ class agent(uav):
 
 		# Initialize game data sequences
 		self.game_data = game_data_class()
-#		self.qObj = []
 
 		# If the agent is using Neural network then initialize the model
 		if learning_model == "NN":
 			self.NN_model = load_model('neural_network_model.h5')
+		if learning_model == "Standard":
+			self.qObj = Q_matrix(10)
+			if os.path.isfile('q_dump.pickle'):
+				self.qObj.load_Q()
+			else:
+				self.qObj.reset_Q()
 
 	# Function which takes in observations, rewards, and former Q-matrix and outputs the action that yields maximum Q using the standard method
 	# main loop make location and rewards random and test
 	# Haven't defined proper variable names, in development
-	def predict_Standard(self, location, rewards, qObj):
-		command = qObj.update(location, rewards)
+	def predict_Standard(self, location, rewards):
+		command = self.qObj.update(location, rewards)
+		self.qObj.dump_Q()
+		print('updating')
 		return command
 		pass
 		"""
@@ -115,11 +122,11 @@ class agent(uav):
 	def check_crash(self):
 		return self.crashed
 
-	def move(self, qObj):
+	def move(self):
 		if self.model == "Random":
 			command = self.predict_Random()
 		elif self.model == "Standard":
-			command = self.predict_Standard(self.location,self.los, qObj) # Not sure on rewards...
+			command = self.predict_Standard(self.location,self.los) # Not sure on rewards...
 		else:
 			command = self.predict_NN(self.location,self.los)
 

@@ -9,6 +9,7 @@ system simulation including training and testing the agent's model
 """
 
 import pickle
+import os
 from visualizer import *
 from entity import *
 from uav import *
@@ -31,7 +32,6 @@ class system:
         self.reset(self.grid_file)
         # Set simulation state to running
         self.running = True
-        self.qObj = []
 
 
     # Function to reset the state of the system from input file
@@ -69,7 +69,7 @@ class system:
         # reset the running boolean
         self.running = True
         # initialize the object for the Q-matrix
-        self.qObj = Q_matrix(self.dim)
+
 
     # Function to load new grid file for use in self.reset(f)
     def load_file(self, grid_file):
@@ -83,7 +83,7 @@ class system:
         # Move dynamic obstacles
         for uav in self.entities["uav"]: uav.move()
         # Move agent
-        self.entities["agent"].move(self.qObj)
+        self.entities["agent"].move()
         # Perform collision detection
         self.detect_collisions()
         # Check if UAV made it to goal or crashed
@@ -229,10 +229,10 @@ class system:
         # with open('data.pickle', 'rb') as x:
         #     self.data = pickle.load(x)
         #
-        # print(self.data
+        # print(self.data)
 
 if __name__ == "__main__":
-    world_instance = system("SingleAgent.txt","Random")
+    world_instance = system("SingleAgent.txt","Standard")
 
     # world_instance.test_sim()
     world_instance.generate_training_data(20)

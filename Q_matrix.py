@@ -6,7 +6,10 @@ Created on Thu Nov 16 09:20:59 2017
 """
 
 # Q- matrix
+import pickle
+import os
 from uav import *
+import numpy as np
 
 class Q_matrix:
     
@@ -16,7 +19,17 @@ class Q_matrix:
         self.num_actions = 4
         self.alpha = 0.1
         self.gamma = 0.75
-        self.Q = np.zeros((self.cells,self.num_actions))
+        if os.path.isfile('q_dump.pickle'):
+            # with open('q_dump.pickle', 'rb') as x:
+            #     self.Q = pickle.load(x)
+            if os.path.getsize('q_dump.pickle') > 0:
+                with open('q_dump.pickle', 'rb') as f:
+                    unpickler = pickle.Unpickler(f)
+                    self.Q = unpickler.load()
+        else:
+            # self.Q = np.zeros((self.cells, self.num_actions))
+            self.Q = np.random.random((self.cells, self.num_actions))
+
         
         
     #def initialize(self):
@@ -39,25 +52,45 @@ class Q_matrix:
             elif i == 3: #action is right
                 st_new = (location[0]+1)*self.grid_sz + location[1]
                 act = "right"
-                    
-            self.Q[st,i] = (1-self.alpha)*self.Q[st,i] + self.alpha*(los[act] + self.gamma*max(Q[st_new,:]))
+            # DEBUG: Hacked to get running     
+          #  try:
+            self.Q[st,i] = (1-self.alpha)*self.Q[st,i] + self.alpha*(los[act] + self.gamma*max(self.Q[st_new,:]))
+                # a = self.Q.index(max(self.Q[st,:]))
+            a = np.where(self.Q[st,:] == max(self.Q[st,:]))
+            a = a[0][0]
         
-        a = self.Q.index(max(self.Q[st,:])) 
-		
-        if a ==0: 
-            command = "up"
-        elif a==1:
-            command = "down"
-        elif a==2:
-            command = "left"
-        elif a==3:
-            command = "right"
-		
-        return command
+            if a ==0: 
+                command = "up"
+            elif a==1:
+                command = "down"
+            elif a==2:
+                command = "left"
+            elif a==3:
+                command = "right"
+            return command
+          #  except IndexError:
+          #  print("IndexError")
+          #  return "up" #DEBUG: Fix
     
     def reset_Q(self):
-        self.Q = np.zeros(self.cells,self.num_actions)
+        # self.Q = np.zeros((self.cells, self.num_actions))
+        self.Q = np.random.random((self.cells, self.num_actions))
+        with open('q_dump.pickle', 'wb') as x:
+            pickle.dump(self.Q, x)
 
+    def dump_Q(self):
+        # os.remove('q_dump.pickle')
+        with open('q_dump.pickle', 'wb') as x:
+            pickle.dump(self.Q, x)
 
-        
-        
+    def load_Q(self):
+
+        # with open('q_dump.pickle', 'rb') as x:
+        #     self.Q = pickle.load(x)
+
+        if os.path.getsize('q_dump.pickle') > 0:
+            with open('q_dump.pickle', 'rb') as f:
+                unpickler = pickle.Unpickler(f)
+                # if file is not empty scores will be equal
+                # to the value unpickled
+                self.Q = unpickler.load()
