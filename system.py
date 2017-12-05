@@ -235,4 +235,4 @@ if __name__ == "__main__":
     world_instance = system("SingleAgent.txt","Random")
 
     # world_instance.test_sim()
-    world_instance.generate_training_data(60000)
+    world_instance.generate_training_data(20)

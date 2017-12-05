@@ -3,6 +3,7 @@
 .pyc
 .pyo
 .vs
+**.pickle
 *.pyproj
 *.sln
 __pycache__/

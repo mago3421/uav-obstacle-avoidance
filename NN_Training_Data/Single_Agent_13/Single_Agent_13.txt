@@ -1,0 +1,8 @@
+Single_Agent_13 contains training data for a single agent in the SingleAgent.txt environment
+
+This data set includes 30,000 samples
+
+The samples were the shortest 50% of 60,000 successful games that were run with the random agent, and
+the random agent was programmed to avoid walls. 
+
+Created by Katherine Glasheen on 11/27/17
