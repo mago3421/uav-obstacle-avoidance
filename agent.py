@@ -153,5 +153,8 @@ class agent(uav):
 		else:
 			self.NN_model_Name = NN_model_file
 			self.NN_model = load_model(self.NN_model_file)
+
+	def reinitialize_game_data(self):
+		self.game_data.reinitialize()
 	
 

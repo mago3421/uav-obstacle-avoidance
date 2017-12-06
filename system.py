@@ -44,20 +44,6 @@ class system:
                          "goal": None,
                          "entity": []}
 
-		# Reset the game data class. 
-		# TLDR: if you want to recreate the data that the NN model was initially trained with
-		# set the boolean = True
-		# 
-		# Long Version: Note that when training data was created for the
-		# neural network model this was NOT implemted and as such neural_network.py's 
-		# data processing was done with Broken_Data = True. The consequence of not having
-		# this set as False is that the game_data class does not get reset and because
-		# of this every game data class has ALL of the data from the very first initialization
-		# of system
-        Broken_Data = False
-        if Broken_Data == False and self.entities["agent"] != None:
-             del self.entities["agent"].game_data
-
         # Open grid file to initialize dimension and objects
         with open(self.grid_file, 'r') as f:
             # Initialize square dimension of grid
@@ -78,6 +64,21 @@ class system:
                     self.entities["uav"].append(uav([row, col]))
                 elif object_type == "entity":
                     self.entities["entity"].append(entity([row, col]))
+
+		# Reset the game data class. 
+		# TLDR: if you want to recreate the data that the NN model was initially trained with
+		# set the boolean = True
+		# 
+		# Long Version: Note that when training data was created for the
+		# neural network model this was NOT implemted and as such neural_network.py's 
+		# data processing was done with Broken_Data = True. The consequence of not having
+		# this set as False is that the game_data class does not get reset and because
+		# of this every game data class has ALL of the data from the very first initialization
+		# of system
+        Broken_Data = False
+        if Broken_Data == False:
+             self.entities["agent"].reinitialize_game_data()
+
 		# If requested randomize the agent's location
         if random_agent_start == True:
             free_space = True

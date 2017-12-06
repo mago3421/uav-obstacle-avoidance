@@ -10,7 +10,10 @@ import matplotlib.pyplot as plt
 # (optimal path length / actual path length) 
 
 # Want to visualize some of the games? set this as true!
-visualize_some_games = True
+visualize_some_games = False
+
+# Define How many games you would like each model to run
+Games_To_Play = 2
 
 # create a system 
 sys = system("SingleAgent.txt","NN")
@@ -39,8 +42,7 @@ for i in range(0,1):
 	Number_Of_Success.append(0) # we will += 1 for every success of this model
 	Optimality.append(0)        # we will be averaging these on a model basis
 
-	# run the model 1000 times and measure the path length
-	Games_To_Play = 2
+	# run the model desired number of times and measure the path length
 	for run in range(0,Games_To_Play):
 		# Reset and run the system instance with the new NN agent
 		sys.reset(random_agent_start=True,NN_Model_File=model_name)
@@ -64,16 +66,18 @@ for i in range(0,1):
 	Number_Of_Success[i] /= Games_To_Play
 
 # Plot all of the results
-Success_Plot = plt.figure().add_subplot(111)
-Success_Plot.plot(Training_Number,Number_Of_Success)
-Success_Plot.xlabel('Number of Training Games')
-Success_Plot.ylabel('Rate of Reaching the Goal (%)')
-Success_Plot.savefit('Success_Plot.png')
-Success_Plot.show()
+plt.figure(1)
+plt.plot(Training_Number,Number_Of_Success)
+plt.xlabel('Number of Training Games')
+plt.ylabel('Rate of Reaching the Goal (%)')
+plt.title('Success Rate based on Training Size')
+plt.savefig('Success_Plot.png')
 
-Optimality_Plot = plt.figure().add_subplot(111)
-Optimality_Plot.plot(Training_Number,Optimality)
-Optimality_Plot.xlabel('Number of Training Games')
-Optimality_Plot.ylabel('Average Path Length Efficiency for Successful Games (%)')
-Optimality_Plot.savefit('Optimality_Plot.png')
-Optimality_Plot.show()
+plt.figure(2)
+plt.plot(Training_Number,Optimality)
+plt.xlabel('Number of Training Games')
+plt.ylabel('Average Path Length Efficiency for Successful Games (%)')
+plt.title('Path Optimality Based on Training Size')
+plt.savefig('Optimality_Plot.png')
+
+plt.show()
