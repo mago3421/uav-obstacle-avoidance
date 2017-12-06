@@ -33,8 +33,8 @@ class Q_matrix:
                     self.Q = unpickler.load()
         else:
             # self.Q = np.zeros((self.cells, self.num_actions))
-            # self.Q = np.random.random((self.cells, self.num_actions))
-            self.Q = sio.loadmat('QContents.mat')['Q_matrix']
+            self.Q = np.random.random((self.cells, self.num_actions))
+            # self.Q = sio.loadmat('QContents.mat')['Q_matrix']
 
 
 
@@ -77,15 +77,15 @@ class Q_matrix:
                 command = "left"
             elif a==3:
                 command = "right"
-            return command
+        return command
           #  except IndexError:
           #  print("IndexError")
           #  return "up" #DEBUG: Fix
     
     def reset_Q(self):
         # self.Q = np.zeros((self.cells, self.num_actions))
-        # self.Q = np.random.random((self.cells, self.num_actions))
-        self.Q = sio.loadmat('QContents.mat')['Q_matrix']
+        self.Q = np.random.random((self.cells, self.num_actions))
+        # self.Q = sio.loadmat('QContents.mat')['Q_matrix']
 
         with open('q_dump.pickle', 'wb') as x:
             pickle.dump(self.Q, x)
