@@ -20,7 +20,7 @@ from game_data import *
 class agent(uav):
 
 	# Intializer function
-	def __init__(self, location, learning_model="Random"):
+	def __init__(self, location, learning_model="Random", enemy=False):
 		# Initialize uav super-class
 		super(agent,self).__init__(location)
 #		self.Q = Q#Q matrix, initialized as 3D matrix
@@ -37,8 +37,12 @@ class agent(uav):
 		if learning_model == "NN":
 			self.NN_model = load_model('neural_network_model.h5')
 		if learning_model == "Standard":
-			self.qObj = Q_matrix(10)
-			if os.path.isfile('q_dump.pickle'):
+			if enemy == False:
+				Q_Matrix_Pickle_File = 'q_dump.pickle'
+			else: # The agent is an adversary/obstacle
+				Q_Matrix_Pickle_File = 'q_dump_enemy.pickle'
+			self.qObj = Q_matrix(10,Q_Matrix_Pickle_File)
+			if os.path.isfile(Q_Matrix_Pickle_File):
 				self.qObj.load_Q()
 			else:
 				self.qObj.reset_Q()

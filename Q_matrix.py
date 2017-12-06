@@ -18,17 +18,17 @@ import scipy.io as sio
 
 class Q_matrix:
     
-    def __init__(self, dimensions):
+    def __init__(self, dimensions, Q_Matrix_Pickle_File = 'q_dump.pickle'):
         self.grid_sz = dimensions #first line of singleagent.txt
         self.cells = self.grid_sz*self.grid_sz
         self.num_actions = 4
         self.alpha = .01 # learning rate
         self.gamma = 0.1 # discount factor
-        if os.path.isfile('q_dump.pickle'):
+        if os.path.isfile(Q_Matrix_Pickle_File):
             # with open('q_dump.pickle', 'rb') as x:
             #     self.Q = pickle.load(x)
-            if os.path.getsize('q_dump.pickle') > 0:
-                with open('q_dump.pickle', 'rb') as f:
+            if os.path.getsize(Q_Matrix_Pickle_File) > 0:
+                with open(Q_Matrix_Pickle_File, 'rb') as f:
                     unpickler = pickle.Unpickler(f)
                     self.Q = unpickler.load()
         else:
