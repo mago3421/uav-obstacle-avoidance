@@ -35,7 +35,7 @@ class system:
 
 
     # Function to reset the state of the system from input file
-    def reset(self, grid_file=None, random_agent_start = False):
+    def reset(self, grid_file=None, random_agent_start = True):
         # Set file the system uses to reset itself
         self.grid_file = grid_file if grid_file else self.grid_file
         # Initialize dictionary of entities
@@ -47,11 +47,14 @@ class system:
         with open(self.grid_file, 'r') as f:
             # Initialize square dimension of grid
             self.dim = int(f.readline().strip('\n'))
+            # Create dictionary of locations for fast collision detection
+            locs = []
             # Initialize objects
             for line in f:
                 object_type, row, col = (line.strip('\n')).split(' ')
                 row = int(row)
                 col = int(col)
+                if object_type != "agent": locs.append((row, col))
                 if object_type == "agent":
                     self.entities["agent"] = agent([row, col], self.modelType)
                 elif object_type == "goal":
@@ -62,10 +65,13 @@ class system:
                     self.entities["entity"].append(entity([row, col]))
 		# If requested randomize the agent's location
         if random_agent_start == True:
-            x_rand = round(random.random()*self.dim)
-            y_rand = round(random.random()*self.dim)
+            free_space = True
+            while free_space:
+                x_rand = round(random.random()*self.dim)
+                y_rand = round(random.random()*self.dim)
+                free_space = (x_rand, y_rand) in locs
             self.entities["agent"].location[0] = x_rand
-            self.entities["agent"].location[0] = y_rand
+            self.entities["agent"].location[1] = y_rand
         # reset the running boolean
         self.running = True
         # initialize the object for the Q-matrix

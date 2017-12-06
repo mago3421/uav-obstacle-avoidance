@@ -68,7 +68,8 @@ class Q_matrix:
                 # a = self.Q.index(max(self.Q[st,:]))
             a = np.where(self.Q[st,:] == max(self.Q[st,:])) # we pick the index of the max Q value associated with the action for a particular state
             a = a[0][0] # This is because np.where returns an array and we need a value
-        
+            # a = np.random.choice(np.flatnonzero(self.Q[st,:] == self.Q[st,:].max())) # Helps break a tie when agent is stuck in a corner ( for zero initialization)
+
             if a ==0: # Associating the index( a number) with a verbal command
                 command = "up"
             elif a==1:
