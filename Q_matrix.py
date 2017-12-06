@@ -33,8 +33,8 @@ class Q_matrix:
                     self.Q = unpickler.load()
         else:
             # self.Q = np.zeros((self.cells, self.num_actions))
-            # self.Q = np.random.random((self.cells, self.num_actions))
-            self.Q = sio.loadmat('QContents.mat')['Q_matrix']
+            self.Q = np.random.random((self.cells, self.num_actions))
+            # self.Q = sio.loadmat('QContents.mat')['Q_matrix']
 
 
 
@@ -68,7 +68,8 @@ class Q_matrix:
                 # a = self.Q.index(max(self.Q[st,:]))
             a = np.where(self.Q[st,:] == max(self.Q[st,:])) # we pick the index of the max Q value associated with the action for a particular state
             a = a[0][0] # This is because np.where returns an array and we need a value
-        
+            # a = np.random.choice(np.flatnonzero(self.Q[st,:] == self.Q[st,:].max())) # Helps break a tie when agent is stuck in a corner ( for zero initialization)
+
             if a ==0: # Associating the index( a number) with a verbal command
                 command = "up"
             elif a==1:
@@ -77,15 +78,15 @@ class Q_matrix:
                 command = "left"
             elif a==3:
                 command = "right"
-            return command
+        return command
           #  except IndexError:
           #  print("IndexError")
           #  return "up" #DEBUG: Fix
     
     def reset_Q(self):
         # self.Q = np.zeros((self.cells, self.num_actions))
-        # self.Q = np.random.random((self.cells, self.num_actions))
-        self.Q = sio.loadmat('QContents.mat')['Q_matrix']
+        self.Q = np.random.random((self.cells, self.num_actions))
+        # self.Q = sio.loadmat('QContents.mat')['Q_matrix']
 
         with open('q_dump.pickle', 'wb') as x:
             pickle.dump(self.Q, x)
