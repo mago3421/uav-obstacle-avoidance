@@ -35,7 +35,7 @@ class system:
 
 
     # Function to reset the state of the system from input file
-    def reset(self, grid_file=None, random_agent_start = True):
+    def reset(self, grid_file=None, random_agent_start = True, NN_Model_File = None):
         # Set file the system uses to reset itself
         self.grid_file = grid_file if grid_file else self.grid_file
         # Initialize dictionary of entities
@@ -43,6 +43,21 @@ class system:
                          "uav": [],
                          "goal": None,
                          "entity": []}
+
+		# Reset the game data class. 
+		# TLDR: if you want to recreate the data that the NN model was initially trained with
+		# set the boolean = True
+		# 
+		# Long Version: Note that when training data was created for the
+		# neural network model this was NOT implemted and as such neural_network.py's 
+		# data processing was done with Broken_Data = True. The consequence of not having
+		# this set as False is that the game_data class does not get reset and because
+		# of this every game data class has ALL of the data from the very first initialization
+		# of system
+        Broken_Data = False
+        if Broken_Data == False and self.entities["agent"] != None:
+             del self.entities["agent"].game_data
+
         # Open grid file to initialize dimension and objects
         with open(self.grid_file, 'r') as f:
             # Initialize square dimension of grid
@@ -74,6 +89,11 @@ class system:
             self.entities["agent"].location[1] = y_rand
         # reset the running boolean
         self.running = True
+		# Specify the agent's initial position
+        self.entities["agent"].game_data.Initial_Position = self.entities["agent"].get_location()
+		# If using NN agent and want to specify the model file
+        if self.modelType == "NN" and NN_Model_File != None:
+            self.entities["agent"].set_NN_model(NN_Model_File)
         # initialize the object for the Q-matrix
 
 
@@ -87,6 +107,7 @@ class system:
     # Function which evolves the system by one timestep
     def step(self):
         # Move dynamic obstacles
+
         for uav in self.entities["uav"]: uav.move()
         # Move agent
         self.entities["agent"].move()
@@ -187,7 +208,9 @@ class system:
         else:
             print("Crashed - Game Over.")
 
-    def test_sim(self, modelType="Random"):
+    def test_sim(self, modelType=None):
+        if modelType == None:
+            modelType = self.modelType
         self.reset(self.grid_file, modelType)  # create grid world and initialize learning model
         while self.running == True:  # Run learning model until it crashes or reaches goal
             self.step()
@@ -238,7 +261,7 @@ class system:
         # print(self.data)
 
 if __name__ == "__main__":
-    world_instance = system("SingleAgent.txt","Standard")
+    world_instance = system("SingleAgent.txt","Random")
 
-    world_instance.test_sim()
-    #world_instance.generate_training_data(20)
+    #world_instance.test_sim()
+    world_instance.generate_training_data(20)

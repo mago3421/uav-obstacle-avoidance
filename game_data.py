@@ -11,10 +11,11 @@ from running a game
 """
 
 class game_data_class:
-	def __init__(self,Action_Sequence=[],Position_Sequence=[],Reward_Sequence=[]):
+	def __init__(self,Action_Sequence=[],Position_Sequence=[],Reward_Sequence=[], Initial_Position=[0,0]):
 		self.Action_Sequence=Action_Sequence
 		self.Position_Sequence = Position_Sequence
 		self.Reward_Sequence = Reward_Sequence
+		self.Initial_Position = Initial_Position
 
 	def update(self,Action,Position,Reward):
 		self.Action_Sequence.append(Action)

@@ -34,8 +34,11 @@ class agent(uav):
 		self.game_data = game_data_class()
 
 		# If the agent is using Neural network then initialize the model
+		self.NN_model_file = 'neural_network_model.h5'
 		if learning_model == "NN":
-			self.NN_model = load_model('neural_network_model.h5')
+			self.NN_model = load_model(self.NN_model_file)
+
+		# Initialization of standard model
 		if learning_model == "Standard":
 			if enemy == False:
 				Q_Matrix_Pickle_File = 'q_dump.pickle'
@@ -143,6 +146,12 @@ class agent(uav):
 
 		self.game_data.update(command,self.location,self.los) # TODO maybe adding these should be optional?
 
-
+	# Change the base model of the NN agent
+	def set_NN_model(self, modelName):
+		if self.model != "NN":
+			print('This function is for use with the Neural Network Agent')
+		else:
+			self.NN_model_Name = NN_model_file
+			self.NN_model = load_model(self.NN_model_file)
 	
 

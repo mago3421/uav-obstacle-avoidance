@@ -1,0 +1,78 @@
+from system import *
+from environment import *
+import matplotlib.pyplot as plt
+
+
+# File to plot the success rate of a NN model (number of times the
+# goal is reached/number of attempts)
+#
+# And for successful games we plot the optimality of the found paths
+# (optimal path length / actual path length) 
+
+# Want to visualize some of the games? set this as true!
+visualize_some_games = True
+
+# create a system 
+sys = system("SingleAgent.txt","NN")
+
+# Define the optimal path length for "SingleAgent.txt" based on starting position
+Optimal_Path_Length_Dict = {
+	[0,0]:7, [0,1]:6, [0,2]:5, [0,3]:6, [0,4]:5, [0,5]:6, [0,6]:7, [0,7]:8, [0,8]:9, [0,9]:10,
+	[1,0]:6, [1,1]:5, [1,2]:4, [1,3]:5, [1,4]:4, [1,5]:5,          [1,7]:9, [1,8]:8, [1,9]:9,
+             [2,1]:4, [2,2]:3, [2,3]:4, [2,4]:3, [2,5]:4,                   [2,8]:7, [2,9]:8,
+	[3,0]:4, [3,1]:3, [3,2]:2,          [3,4]:2, [3,5]:3,          [3,7]:5, [3,8]:6, [3,9]:7,
+             [4,1]:2, [4,2]:1, [4,3]:0, [4,4]:1, [4,5]:2, [4,6]:3, [4,7]:4, [4,8]:5, [4,9]:4,
+	[5,0]:6,          [5,2]:2, [5,3]:1, [5,4]:2, [5,5]:3, [5,6]:4, [5,7]:5, [5,8]:6, [5,9]:7,
+    [6,0]:5, [6,1]:4, [6,2]:3, [6,3]:2, [6,4]:3, [6,5]:4, [6,6]:5, [6,7]:6, [6,8]:7, [6,9]:8,
+    [7,0]:6, [7,1]:5, [7,2]:4, [7,3]:3,          [7,5]:5, [7,6]:6, [7,7]:7, [7,8]:8, [7,9]:9,
+             [8,1]:6, [8,2]:5, [8,3]:4, [8,4]:5, [8,5]:6, [8,6]:7, [8,7]:8, [8,8]:9, [8,9]:10, 
+	[9,0]:8, [9,1]:7, [9,2]:6, [9,3]:5, [9,4]:6, [9,5]:7, [9,6]:8, [9,7]:9, [9,8]:10,[9,9]:11}
+
+# Create data holders
+Number_Of_Success = []
+Optimality = []
+Training_Number = []
+# run however many models you would like
+for i in range(0,1):
+	Training_Number.append(5)
+	model_name = 'neural_network_model.h5'
+	Number_Of_Success.append(0) # we will += 1 for every success of this model
+	Optimality.append(0)        # we will be averaging these on a model basis
+
+	# run the model 1000 times and measure the path length
+	Games_To_Play = 1000
+	for run in range(0,Games_To_Play):
+		# Reset and run the system instance with the new NN agent
+		sys.reset(random_agent_start=True,NN_Model_File=model_name)
+
+		if visualize_some_games == True and total_num_games % 100 == 0:
+			environment(sys).run()
+		else:
+			sys.test_sim()
+
+		# Check success of the run
+		if self.get_outcome() == True:  # We reached the goal
+			Number_Of_Success[i] += 1
+			# figure out optimality of success
+			Optimal_Path_Length = Optimal_Path_Length_Dict[sys.entities["agent"].game_data.Initial_Position]
+			Actual_Path_Length = len(sys.entities["agent"].game_data.Action_Sequence)
+			Optimality[i] += Optimal_Path_Length/Actual_Path_Length # Add the efficiency of this run (we will average later)
+
+	# Average the performance
+	Optimality[i] /= Number_Of_Success[i]
+	Number_Of_Success[i] /= Games_To_Play
+
+# Plot all of the results
+Success_Plot = plt.figure().add_subplot(111)
+Success_Plot.plot(Training_Number,Number_Of_Success)
+Success_Plot.xlabel('Number of Training Games')
+Success_Plot.ylabel('Rate of Reaching the Goal (%)')
+Success_Plot.savefit('Success_Plot.png')
+Success_Plot.show()
+
+Optimality_Plot = plt.figure().add_subplot(111)
+Optimality_Plot.plot(Training_Number,Optimality)
+Optimality_Plot.xlabel('Number of Training Games')
+Optimality_Plot.ylabel('Average Path Length Efficiency for Successful Games (%)')
+Optimality_Plot.savefit('Optimality_Plot.png')
+Optimality_Plot.show()
