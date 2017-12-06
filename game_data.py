@@ -16,8 +16,14 @@ class game_data_class:
 		self.Position_Sequence = Position_Sequence
 		self.Reward_Sequence = Reward_Sequence
 		self.Initial_Position = Initial_Position
+		self.Initial_Position_Tuple = (Initial_Position[0],Initial_Position[1]) # Dictionaries don't want lists 
+		                                               # as keys and I want to have a dictionary of optimal path lengths
 
 	def update(self,Action,Position,Reward):
 		self.Action_Sequence.append(Action)
 		self.Position_Sequence.append(Position)
 		self.Reward_Sequence.append(Reward)
+
+	def update_Initial_Position(self,Initial_Position):
+		self.Initial_Position = Initial_Position
+		self.Initial_Position_Tuple = (Initial_Position[0], Initial_Position[1])

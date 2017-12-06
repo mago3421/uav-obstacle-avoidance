@@ -147,7 +147,7 @@ class agent(uav):
 		self.game_data.update(command,self.location,self.los) # TODO maybe adding these should be optional?
 
 	# Change the base model of the NN agent
-	def set_NN_model(self, modelName):
+	def set_NN_model(self, NN_model_file):
 		if self.model != "NN":
 			print('This function is for use with the Neural Network Agent')
 		else:

@@ -90,7 +90,7 @@ class system:
         # reset the running boolean
         self.running = True
 		# Specify the agent's initial position
-        self.entities["agent"].game_data.Initial_Position = self.entities["agent"].get_location()
+        self.entities["agent"].game_data.update_Initial_Position(self.entities["agent"].get_location())
 		# If using NN agent and want to specify the model file
         if self.modelType == "NN" and NN_Model_File != None:
             self.entities["agent"].set_NN_model(NN_Model_File)
