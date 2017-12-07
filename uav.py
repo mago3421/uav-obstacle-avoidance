@@ -45,9 +45,7 @@ class uav(entity):
 							 "down": 0.10,
 							 "left": 0.05,
 							 "right":0.75,}}
-		# Initialize health
-		self.crashed = False
-							
+
 	# Move function
 	def move(self): 
 		# Insert logic to choose command
@@ -72,20 +70,13 @@ class uav(entity):
 		dy = self.location[1] - self.last_location[1]
 		# Set location to last location and leave last location to indicate it has spent two turns there
 		self.location = self.last_location
+		if dx==0 and dy==0:
+			pass
 		# Right movement, move left instead
-		if dx > 0: self.heading = "left"
+		elif dx > 0: self.heading = "left"
 		# Left movement, move right instead
 		elif dx < 0: self.heading = "right"
 		# Up movement, move down instead
 		elif dy > 0: self.heading = "down"
 		# Down movement, move up instead
 		elif dy < 0: self.heading = "up"
-
-
-if __name__ == "__main__":
-	obsHor = ["!","^", "*","-","#","~"]
-	loc = [2,2]
-	UAV=uav(loc)
-
-	rew = UAV.observe(obsHor)
-	print("rew = ", rew)

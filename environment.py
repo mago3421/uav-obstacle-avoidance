@@ -21,13 +21,14 @@ from agent import *
 class environment(QtGui.QWidget):
 	# Function to initialize environment
 	def __init__(self, system):
+		# Initialize system as part of environment
+		self.system = system
 		# Start app and create main window
 		self.app = QtGui.QApplication([])
 		self.main_window = QtGui.QMainWindow()
 		self.main_window.setWindowTitle("UAV Obstacle Avoidance Simulator")
 		QtGui.QWidget.__init__(self)
-		# Initialize system as part of environment
-		self.system = system
+
 
 	# Function to create window
 	def create_window(self):

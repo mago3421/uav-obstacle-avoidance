@@ -264,5 +264,5 @@ class system:
 if __name__ == "__main__":
     world_instance = system("SingleAgent.txt","Standard")
 
-    #world_instance.test_sim()
-    world_instance.generate_training_data(2000)
+    world_instance.test_sim()
+    #world_instance.generate_training_data(2000)

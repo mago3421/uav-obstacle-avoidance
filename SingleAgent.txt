@@ -11,3 +11,4 @@ entity 5 1
 agent 8 8
 entity 7 4
 entity 8 0
+uav 9 9
