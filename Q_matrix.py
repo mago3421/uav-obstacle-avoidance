@@ -35,16 +35,6 @@ class Q_matrix:
 			# self.Q = np.zeros((self.cells, self.num_actions))
 			self.Q = np.random.random((self.cells, self.num_actions))
 			# self.Q = sio.loadmat('QContents.mat')['Q_matrix']
-
-
-
-
-		
-		
-	#def initialize(self):
-		
-	# location = self.entities["agent"],
-	# rewards = self.rewards or self.los
 	
 	def update(self,location,los):
 		st = (location[0]*self.grid_sz) + location[1] # Each location is written as (5,7) - 5*10+7 = 57th row of the Q matrix, which has 4 columns that has the actions associated with it
@@ -80,9 +70,6 @@ class Q_matrix:
 		elif a==3:
 			command = "right"
 		return command
-		  #  except IndexError:
-		  #  print("IndexError")
-		  #  return "up" #DEBUG: Fix
 	
 	def reset_Q(self):
 		# self.Q = np.zeros((self.cells, self.num_actions))
