@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 # (optimal path length / actual path length) 
 
 # Want to visualize some of the games? set this as true!
-visualize_some_games = False
-
+visualize_some_games = True
+ 
 # Define How many games you would like each model to run
 Games_To_Play = 1000
 
@@ -38,7 +38,7 @@ Training_Number = []
 # run however many models you would like
 for i in range(0,11):
 	Training_Number.append((i*60+60)*1000) # Training numbers increment by 60 thousand
-	model_name = 'neural_network_model_%dthsnd.h5' % (i*60+60)
+	model_name = 'neural_network_model_%dthsnd.h5' % ((i+10)*60+60)
 
 	print('Beginning model with ', Training_Number[i], 'training examples')
 
