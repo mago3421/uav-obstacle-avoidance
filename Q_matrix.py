@@ -17,93 +17,94 @@ import numpy as np
 import scipy.io as sio
 
 class Q_matrix:
-    
-    def __init__(self, dimensions, Q_Matrix_Pickle_File = 'q_dump.pickle'):
-        self.grid_sz = dimensions #first line of singleagent.txt
-        self.cells = self.grid_sz*self.grid_sz
-        self.num_actions = 4
-        self.alpha = .01 # learning rate
-        self.gamma = 0.1 # discount factor
-        if os.path.isfile(Q_Matrix_Pickle_File):
-            # with open('q_dump.pickle', 'rb') as x:
-            #     self.Q = pickle.load(x)
-            if os.path.getsize(Q_Matrix_Pickle_File) > 0:
-                with open(Q_Matrix_Pickle_File, 'rb') as f:
-                    unpickler = pickle.Unpickler(f)
-                    self.Q = unpickler.load()
-        else:
-            # self.Q = np.zeros((self.cells, self.num_actions))
-            self.Q = np.random.random((self.cells, self.num_actions))
-            # self.Q = sio.loadmat('QContents.mat')['Q_matrix']
+	
+	def __init__(self, dimensions, Q_Matrix_Pickle_File = 'q_dump.pickle'):
+		self.grid_sz = dimensions #first line of singleagent.txt
+		self.cells = self.grid_sz*self.grid_sz
+		self.num_actions = 4
+		self.alpha = .01 # learning rate
+		self.gamma = 0.1 # discount factor
+		if os.path.isfile(Q_Matrix_Pickle_File):
+			# with open('q_dump.pickle', 'rb') as x:
+			#     self.Q = pickle.load(x)
+			if os.path.getsize(Q_Matrix_Pickle_File) > 0:
+				with open(Q_Matrix_Pickle_File, 'rb') as f:
+					unpickler = pickle.Unpickler(f)
+					self.Q = unpickler.load()
+		else:
+			# self.Q = np.zeros((self.cells, self.num_actions))
+			self.Q = np.random.random((self.cells, self.num_actions))
+			# self.Q = sio.loadmat('QContents.mat')['Q_matrix']
 
 
 
 
-        
-        
-    #def initialize(self):
-        
-    # location = self.entities["agent"],
-    # rewards = self.rewards or self.los
-    
-    def update(self,location,los):
-        st = location[0]*self.grid_sz + location[1] # Each location is written as (5,7) - 5*10+7 = 57th row of the Q matrix, which has 4 columns that has the actions associated with it
-        for i in range(self.num_actions): #number of actions # this loop is to propagate the agent forward to help populate the matrix
-            if i == 0:   #action is up
-                st_new = location[0]*self.grid_sz + location[1]+1
-                act = "up"
-            elif i == 1: #action is down
-                st_new = location[0]*self.grid_sz + location[1]-1
-                act = "down"
-            elif i == 2:   #action is left
-                st_new = (location[0]-1)*self.grid_sz + location[1]
-                act = "left"
-            elif i == 3: #action is right
-                st_new = (location[0]+1)*self.grid_sz + location[1]
-                act = "right"
-            # DEBUG: Hacked to get running     
-          #  try:
-                # the Q matrix is strutured in a way where each state has Q values for each action associated with that state
-            self.Q[st,i] = (1-self.alpha)*self.Q[st,i] + self.alpha*(los[act] + self.gamma*max(self.Q[st_new,:]))
-                # a = self.Q.index(max(self.Q[st,:]))
-            a = np.where(self.Q[st,:] == max(self.Q[st,:])) # we pick the index of the max Q value associated with the action for a particular state
-            a = a[0][0] # This is because np.where returns an array and we need a value
-            # a = np.random.choice(np.flatnonzero(self.Q[st,:] == self.Q[st,:].max())) # Helps break a tie when agent is stuck in a corner ( for zero initialization)
+		
+		
+	#def initialize(self):
+		
+	# location = self.entities["agent"],
+	# rewards = self.rewards or self.los
+	
+	def update(self,location,los):
+		st = (location[0]*self.grid_sz) + location[1] # Each location is written as (5,7) - 5*10+7 = 57th row of the Q matrix, which has 4 columns that has the actions associated with it
+		for i in range(self.num_actions): #number of actions # this loop is to propagate the agent forward to help populate the matrix
+			if i == 0 and (location[1] < 9):   #action is up
+				st_new = (location[0]*self.grid_sz) + location[1]+1
+				act = "up"
+			elif i == 1 and (location[1] > 1): #action is down
+				st_new = (location[0]*self.grid_sz) + location[1]-1
+				act = "down"
+			elif i == 2 and (location[0] > 1):   #action is left
+				st_new = ((location[0]-1)*self.grid_sz) + location[1]
+				act = "left"
+			elif i == 3 and (location[0] < 9): #action is right
+				st_new = ((location[0]+1)*self.grid_sz) + location[1]
+				act = "right"
+			else:
+				continue
+			# the Q matrix is strutured in a way where each state has Q values for each action associated with that state
+			self.Q[st,i] = (1-self.alpha)*self.Q[st,i] + self.alpha*(los[act] + self.gamma*max(self.Q[st_new,:]))
 
-            if a ==0: # Associating the index( a number) with a verbal command
-                command = "up"
-            elif a==1:
-                command = "down"
-            elif a==2:
-                command = "left"
-            elif a==3:
-                command = "right"
-        return command
-          #  except IndexError:
-          #  print("IndexError")
-          #  return "up" #DEBUG: Fix
-    
-    def reset_Q(self):
-        # self.Q = np.zeros((self.cells, self.num_actions))
-        self.Q = np.random.random((self.cells, self.num_actions))
-        # self.Q = sio.loadmat('QContents.mat')['Q_matrix']
+		# Moved assignment of command and Q_matrix line of sight max
+		a = np.where(self.Q[st,:] == max(self.Q[st,:])) # we pick the index of the max Q value associated with the action for a particular state
+		a = a[0][0] # This is because np.where returns an array and we need a value
+		# a = np.random.choice(np.flatnonzero(self.Q[st,:] == self.Q[st,:].max())) # Helps break a tie when agent is stuck in a corner ( for zero initialization)
 
-        with open('q_dump.pickle', 'wb') as x:
-            pickle.dump(self.Q, x)
+		if a ==0: # Associating the index( a number) with a verbal command
+			command = "up"
+		elif a==1:
+			command = "down"
+		elif a==2:
+			command = "left"
+		elif a==3:
+			command = "right"
+		return command
+		  #  except IndexError:
+		  #  print("IndexError")
+		  #  return "up" #DEBUG: Fix
+	
+	def reset_Q(self):
+		# self.Q = np.zeros((self.cells, self.num_actions))
+		self.Q = np.random.random((self.cells, self.num_actions))
+		# self.Q = sio.loadmat('QContents.mat')['Q_matrix']
 
-    def dump_Q(self):
-        # os.remove('q_dump.pickle')
-        with open('q_dump.pickle', 'wb') as x:
-            pickle.dump(self.Q, x)
+		with open('q_dump.pickle', 'wb') as x:
+			pickle.dump(self.Q, x)
 
-    def load_Q(self):
+	def dump_Q(self):
+		# os.remove('q_dump.pickle')
+		with open('q_dump.pickle', 'wb') as x:
+			pickle.dump(self.Q, x)
 
-        # with open('q_dump.pickle', 'rb') as x:
-        #     self.Q = pickle.load(x)
+	def load_Q(self):
 
-        if os.path.getsize('q_dump.pickle') > 0:
-            with open('q_dump.pickle', 'rb') as f:
-                unpickler = pickle.Unpickler(f)
-                # if file is not empty scores will be equal
-                # to the value unpickled
-                self.Q = unpickler.load()
+		# with open('q_dump.pickle', 'rb') as x:
+		#     self.Q = pickle.load(x)
+
+		if os.path.getsize('q_dump.pickle') > 0:
+			with open('q_dump.pickle', 'rb') as f:
+				unpickler = pickle.Unpickler(f)
+				# if file is not empty scores will be equal
+				# to the value unpickled
+				self.Q = unpickler.load()

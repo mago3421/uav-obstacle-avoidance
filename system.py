@@ -83,8 +83,8 @@ class system:
         if random_agent_start == True:
             free_space = True
             while free_space:
-                x_rand = round(random.random()*self.dim)
-                y_rand = round(random.random()*self.dim)
+                x_rand = random.randint(0, 9)
+                y_rand = random.randint(0, 9)
                 free_space = (x_rand, y_rand) in locs
             self.entities["agent"].location[0] = x_rand
             self.entities["agent"].location[1] = y_rand
@@ -183,7 +183,7 @@ class system:
             # Check if UAV collided with wall
             x = uav.get_location()[0]
             y = uav.get_location()[1]
-            if x < 0 or y < 0 or x >= self.dim or y >= self.dim:
+            if (x < 0) or (y < 0) or (x >= self.dim) or (y >= self.dim):
                 uav.collision()
         # Check agent if collided with static or dynamic obstacles
         for obstacle in self.entities["entity"] + self.entities["uav"]:
@@ -194,7 +194,7 @@ class system:
         # Check if the agent collided with a wall
         x = self.entities["agent"].get_location()[0]
         y = self.entities["agent"].get_location()[1]
-        if x < 0 or y < 0 or x >= self.dim or y >= self.dim:
+        if (x < 0) or (y < 0) or (x >= self.dim) or (y >= self.dim):
             self.entities["agent"].collision()
 
     # Function to check status of system. NOTE: Only works when system is finished running.
@@ -262,7 +262,7 @@ class system:
         # print(self.data)
 
 if __name__ == "__main__":
-    world_instance = system("SingleAgent.txt","Random")
+    world_instance = system("SingleAgent.txt","Standard")
 
     #world_instance.test_sim()
-    world_instance.generate_training_data(20)
+    world_instance.generate_training_data(2000)

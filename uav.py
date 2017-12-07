@@ -45,17 +45,6 @@ class uav(entity):
 							 "down": 0.10,
 							 "left": 0.05,
 							 "right":0.75,}}
-
-		self.rewards = {"goal":100, 
-						"goal_nearby":10, 
-						"entity":-100, 
-						"entity_nearby":-10, 
-						"oob":-50, 
-						"empty": 0}
-						
-		self.los = {"up":0, "down":0, "left":0, "right":0}
-
-		
 		# Initialize health
 		self.crashed = False
 							
@@ -63,6 +52,8 @@ class uav(entity):
 	def move(self): 
 		# Insert logic to choose command
 		command = "up"
+		# Save last location for collision detection
+		self.last_location = self.location
 		# Move if UAV command was successful, else stay put
 		if random() > self.dynamics[command][self.heading]:
 			# Move according to command (up/down -> y+/-1, left/right -> x-/+1)
@@ -70,32 +61,25 @@ class uav(entity):
 			if command == "down": self.location[1] -= 1
 			if command == "left": self.location[0] -= 1
 			if command == "right": self.location[0] += 1
-			#TODO: Perform bounds check to make sure UAV does not move outside grid
-			#location[0] = location[0] if 
-			#location[1] = location[1] if 
 		# UAV changes heading regardless if move was successful
 		self.heading = command
-		# Don't think we need to return location
-		#return self.location
-		
-	# Function which gathers observations based on current position. Should return a matrix with the 
-	def observe(self, obsHorizon):
-		rewards = obsHorizon # initialize so it is the same length
-		for j in range(0,len(obsHorizon)):
-			rewards[j] = self.rewards[obsHorizon[j]] 
-			#print (self.rewards[obsHorizon[j]]) 
-		rewards = np.asarray(rewards)
-		return rewards
-		
-	# Function to update rewards dictionary of UAV
-	def update_rewards(self, rewards):
-		# Assume keys are the same
-		for key in rewards.keys():
-			self.los[key] = rewards[key]
 
-		# Collision function
+
+	# Collision function for UAV returns it to previous location and sets heading in opposite direction
 	def collision(self):
-		self.crashed = True
+		# Get direction of movement
+		dx = self.location[0] - self.last_location[0]
+		dy = self.location[1] - self.last_location[1]
+		# Set location to last location and leave last location to indicate it has spent two turns there
+		self.location = self.last_location
+		# Right movement, move left instead
+		if dx > 0: self.heading = "left"
+		# Left movement, move right instead
+		elif dx < 0: self.heading = "right"
+		# Up movement, move down instead
+		elif dy > 0: self.heading = "down"
+		# Down movement, move up instead
+		elif dy < 0: self.heading = "up"
 
 
 if __name__ == "__main__":

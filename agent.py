@@ -27,8 +27,18 @@ class agent(uav):
 #		self.R = R#initialize R matrix
 		# Initialize learning model
 		self.model = learning_model
-		# Initialize health
+		# Initialize health and battery life
 		self.crashed = False
+		self.battery = 10000
+		# Initialize rewards
+		self.rewards = {"goal":100, 
+						"goal_nearby":10, 
+						"entity":-100, 
+						"entity_nearby":-10, 
+						"oob":-50, 
+						"empty": 0}
+						
+		self.los = {"up":0, "down":0, "left":0, "right":0}
 
 		# Initialize game data sequences
 		self.game_data = game_data_class()
@@ -53,43 +63,26 @@ class agent(uav):
 	# Function which takes in observations, rewards, and former Q-matrix and outputs the action that yields maximum Q using the standard method
 	# main loop make location and rewards random and test
 	# Haven't defined proper variable names, in development
-	def predict_Standard(self, location, rewards):
-		command = self.qObj.update(location, rewards)
+	def predict_Standard(self):
+		print("Agent location: ",self.location)
+		command = self.qObj.update(self.location, self.los)
 		self.qObj.dump_Q()
 		print('updating')
 		return command
-		pass
-		"""
-		for i in range(horizon) #horizon is 4
-		
-		Q[location[0],location[1],action] = (1-alpha)*Q[location[0],location[1],action] + alpha*[Reward[location[0],location[1],action]] + gamma*max(Q[location_new[0],location_new[1],:]) 
-		
-		a = Q.index(max(Q[location[0],location[1],:])) 
-		
-		if a ==1 
-			command = "up"
-		elif a==2
-			command = "down"
-		elif a==3
-			command = "left"
-		elif a==4
-			command = "right"
-		
-		return command	
-		"""
+
 	# Function which predicts next movement based on neural network learning model
-	def predict_NN(self, location, rewards):
+	def predict_NN(self):
 
 		# one hot encode input:
-		input = []
-		input.extend(location)
-		input.append(rewards["up"])
-		input.append(rewards["down"])
-		input.append(rewards["left"])
-		input.append(rewards["right"])
+		input_vec = []
+		input_vec.extend(self.location)
+		input_vec.append(self.rewards["up"])
+		input_vec.append(self.rewards["down"])
+		input_vec.append(self.rewards["left"])
+		input_vec.append(self.rewards["right"])
 
 		# process output:
-		output = self.NN_model.predict(array([input])) # Not sure why the syntax has to be this way to get the correct shape for the initial dense layer.
+		output = self.NN_model.predict(array([input_vec])) # Not sure why the syntax has to be this way to get the correct shape for the initial dense layer.
 		index = argmax(output[0]) # get the index of the most correct action
 		if index == 0:
 			command = "up"
@@ -122,20 +115,32 @@ class agent(uav):
 				return possibleActions[i]
 		return possibleActions[-1] # Last element in the array of possible actions
 
+	# Function to update rewards dictionary of agent
+	def update_rewards(self, rewards):
+		# Assume keys are the same
+		for key in rewards.keys():
+			self.los[key] = rewards[key]
+
 	# Collision function
 	def collision(self):
 		self.crashed = True
+		print("Agent crashed")
 
 	def check_crash(self):
 		return self.crashed
 
 	def move(self):
+		# If plane is crashed, do not move
+		if self.crashed: return
+		# Select model to make prediction from
 		if self.model == "Random":
 			command = self.predict_Random()
 		elif self.model == "Standard":
-			command = self.predict_Standard(self.location,self.los) # Not sure on rewards...
+			command = self.predict_Standard() # Not sure on rewards...
 		else:
-			command = self.predict_NN(self.location,self.los)
+			command = self.predict_NN()
+			
+		print("Selected command %s"%(command))
 
 		# Move if UAV command was successful, else stay put
 		if random.random() > self.dynamics[command][self.heading]:
@@ -143,8 +148,13 @@ class agent(uav):
 			if command == "down": self.location[1] -= 1
 			if command == "left": self.location[0] -= 1
 			if command == "right": self.location[0] += 1
-
+		# Change heading
+		self.heading = command
 		self.game_data.update(command,self.location,self.los) # TODO maybe adding these should be optional?
+		# Deplete charge in battery
+		self.battery -= 1
+		# Agent crashes if battery is depleted
+		if self.battery < 1: self.collision()
 
 	# Change the base model of the NN agent
 	def set_NN_model(self, NN_model_file):
@@ -155,6 +165,7 @@ class agent(uav):
 			self.NN_model = load_model(self.NN_model_file)
 
 	def reinitialize_game_data(self):
-		self.game_data.reinitialize()
-	
+		#self.game_data.reinitialize()
+		del self.game_data
+		self.game_data = game_data_class()
 
