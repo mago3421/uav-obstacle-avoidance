@@ -151,10 +151,11 @@ class agent(uav):
 		if self.model != "NN":
 			print('This function is for use with the Neural Network Agent')
 		else:
-			self.NN_model_Name = NN_model_file
-			self.NN_model = load_model(self.NN_model_file)
+			if self.NN_model_file != NN_model_file: # Only update the model if it actually needs it!
+				self.NN_model_file = NN_model_file
+				self.NN_model = load_model(self.NN_model_file)
 
 	def reinitialize_game_data(self):
-		self.game_data.reinitialize()
+		self.game_data.reinitialize(Action_Sequence=[],Position_Sequence=[],Reward_Sequence=[], Initial_Position=[0,0])
 	
 

@@ -22,7 +22,7 @@ from numpy import random
 
 class system:
     # Function to initialize system
-    def __init__(self, grid_file, modelType = "Random"):
+    def __init__(self, grid_file, modelType = "Random",max_step_count = None):
         self.grid_file = grid_file
         # initialize modelType
         self.modelType = modelType
@@ -32,10 +32,13 @@ class system:
         self.reset(self.grid_file)
         # Set simulation state to running
         self.running = True
-
+		# Set the max step count (None corresponds to infinity)
+        self.max_step_count = max_step_count
 
     # Function to reset the state of the system from input file
     def reset(self, grid_file=None, random_agent_start = True, NN_Model_File = None):
+		# Make a limit for how long games can run
+        self.step_count = 0
         # Set file the system uses to reset itself
         self.grid_file = grid_file if grid_file else self.grid_file
         # Initialize dictionary of entities
@@ -123,6 +126,11 @@ class system:
         else:
             # Update agent rewards
             self.update_rewards()
+		# Keep track of how long a game is running and if desired stop it after too long
+        self.step_count += 1
+        if self.max_step_count != None:
+            if self.step_count > self.max_step_count:
+                self.running = False
 
     # Function which that wraps the agent observe function and feeds the agent its horizon at the end of each round
     def update_rewards(self):
@@ -209,14 +217,16 @@ class system:
         else:
             print("Crashed - Game Over.")
 
-    def test_sim(self, modelType=None):
+    def test_sim(self, modelType=None, Reset_Sim = True, verbose = True):
         if modelType == None:
             modelType = self.modelType
-        self.reset(self.grid_file, modelType)  # create grid world and initialize learning model
+        if Reset_Sim == True:
+            self.reset(self.grid_file, modelType)  # create grid world and initialize learning model
         while self.running == True:  # Run learning model until it crashes or reaches goal
             self.step()
-        print(self.entities["agent"].game_data.Action_Sequence)  # Print the action sequence if you want
-        self.print_outcome()  # Print the outcome of the game
+        if verbose == True:
+            print(self.entities["agent"].game_data.Action_Sequence)  # Print the action sequence if you want
+            self.print_outcome()  # Print the outcome of the game
 
     def generate_training_data(self, Num_Successful_Games, Percentage_Saved_Game=0.5):
         # initialize list of all tuples

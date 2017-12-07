@@ -13,10 +13,10 @@ import matplotlib.pyplot as plt
 visualize_some_games = False
 
 # Define How many games you would like each model to run
-Games_To_Play = 2
+Games_To_Play = 1000
 
 # create a system 
-sys = system("SingleAgent.txt","NN")
+sys = system("SingleAgent.txt", modelType = "NN", max_step_count = 100)
 
 # Define the optimal path length for "SingleAgent.txt" based on starting position
 Optimal_Path_Length_Dict = {
@@ -36,9 +36,12 @@ Number_Of_Success = []
 Optimality = []
 Training_Number = []
 # run however many models you would like
-for i in range(0,1):
-	Training_Number.append(5)
-	model_name = 'neural_network_model.h5'
+for i in range(0,11):
+	Training_Number.append((i*60+60)*1000) # Training numbers increment by 60 thousand
+	model_name = 'neural_network_model_%dthsnd.h5' % (i*60+60)
+
+	print('Beginning model with ', Training_Number[i], 'training examples')
+
 	Number_Of_Success.append(0) # we will += 1 for every success of this model
 	Optimality.append(0)        # we will be averaging these on a model basis
 
@@ -50,7 +53,7 @@ for i in range(0,1):
 		if visualize_some_games == True and run % 100 == 0:
 			environment(sys).run()
 		else:
-			sys.test_sim()
+			sys.test_sim(Reset_Sim = False, verbose = False)
 
 		# Check success of the run
 		if sys.get_outcome() == True:  # We reached the goal
@@ -60,10 +63,16 @@ for i in range(0,1):
 			Actual_Path_Length = len(sys.entities["agent"].game_data.Action_Sequence)
 			Optimality[i] += Optimal_Path_Length/Actual_Path_Length # Add the efficiency of this run (we will average later)
 
+		if run % 10 == 0:
+			print(run, ' out of ', Games_To_Play)
+
 	# Average the performance
 	if Number_Of_Success[i] != 0:
 		Optimality[i] /= Number_Of_Success[i]
 	Number_Of_Success[i] /= Games_To_Play
+
+	print('Number of Successes: ', Number_Of_Success[i])
+	print('Optimality of Successes: ', Optimality[i])
 
 # Plot all of the results
 plt.figure(1)
