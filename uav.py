@@ -11,7 +11,7 @@ a UAV in the simulation including dynamics and path planning.
 """
 
 from entity import *
-from numpy.random import random
+from numpy.random import random, randint
 import numpy as np
 
 class uav(entity):
@@ -49,9 +49,10 @@ class uav(entity):
 	# Move function
 	def move(self): 
 		# Insert logic to choose command
-		command = "up"
+		random_list = ["up", "down", "left", "right"]
+		command = random_list[randint(0,3)]
 		# Save last location for collision detection
-		self.last_location = self.location
+		self.last_location = [self.location[0], self.location[1]]
 		# Move if UAV command was successful, else stay put
 		if random() > self.dynamics[command][self.heading]:
 			# Move according to command (up/down -> y+/-1, left/right -> x-/+1)
